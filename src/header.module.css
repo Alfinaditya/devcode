@@ -1,0 +1,12 @@
+.brand {
+  color: white;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.nav {
+  background-color: var(--main-color);
+}
