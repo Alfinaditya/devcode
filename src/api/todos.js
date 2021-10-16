@@ -30,6 +30,18 @@ export const CreateTodo = () => {
   });
 };
 
+export const CreateTodoItems = body => {
+  return fetch('https://todo.api.devcode.gethired.id/todo-items', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body,
+  }).then(x => {
+    console.log(x);
+    return x.json();
+  });
+};
 export const DetailTodo = params => {
   const [data, setData] = useState('');
   const [watchTitleField, setWatchTitleField] = useState('');
@@ -62,6 +74,17 @@ export const RemoveTodo = params => {
   });
 };
 
+export const RemoveTodoItems = params => {
+  return fetch(`https://todo.api.devcode.gethired.id/todo-items/${params}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).then(x => {
+    return x.json();
+  });
+};
+
 export const UpdateTodoTitle = (params, value) => {
   return fetch(
     `https://todo.api.devcode.gethired.id/activity-groups/${params}`,
@@ -83,6 +106,17 @@ export const Refetch = () => {
   return fetch('https://todo.api.devcode.gethired.id/activity-groups', {
     method: 'GET',
   }).then(x => {
+    return x.json();
+  });
+};
+
+export const RefetchTodoItems = params => {
+  return fetch(
+    `https://todo.api.devcode.gethired.id/todo-items?activity_group_id=${params}`,
+    {
+      method: 'GET',
+    }
+  ).then(x => {
     return x.json();
   });
 };

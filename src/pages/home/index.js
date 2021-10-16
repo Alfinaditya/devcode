@@ -23,7 +23,8 @@ const Home = () => {
       });
     });
   }
-
+  console.log('refetch todos ' + todosRefetch.length);
+  console.log('todos ' + todos.length);
   return (
     <div>
       <h1>Activity</h1>
@@ -58,6 +59,7 @@ const Home = () => {
               </div>
             );
           })}
+      {!todos.length && !todosRefetch.length && <p>No Activity</p>}
     </div>
   );
 };
