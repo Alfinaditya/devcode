@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 
 export const GetTodos = () => {
   const [data, setData] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
   useEffect(() => {
+    setIsLoading(true);
     fetch('https://todo.api.devcode.gethired.id/activity-groups', {
       method: 'GET',
     })
@@ -11,9 +15,14 @@ export const GetTodos = () => {
       })
       .then(res => {
         setData(res.data);
+        setIsLoading(false);
+        setIsError(false);
+      })
+      .catch(() => {
+        setIsError(true);
       });
   }, []);
-  return data;
+  return { data, setData, isLoading, setIsLoading, isError, setIsError };
 };
 
 export const CreateTodo = () => {
