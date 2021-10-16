@@ -26,13 +26,13 @@ export const CreateTodo = () => {
       title: 'New Activity',
     }),
   }).then(x => {
-    console.log(x);
     return x.json();
   });
 };
 
 export const DetailTodo = params => {
   const [data, setData] = useState('');
+  const [watchTitleField, setWatchTitleField] = useState('');
   useEffect(() => {
     fetch(`https://todo.api.devcode.gethired.id/activity-groups/${params}`, {
       method: 'GET',
@@ -42,7 +42,47 @@ export const DetailTodo = params => {
       })
       .then(res => {
         setData(res);
+        setWatchTitleField(res.title);
       });
   }, []);
-  return data;
+  return { data, watchTitleField, setWatchTitleField };
+};
+
+export const RemoveTodo = params => {
+  return fetch(
+    `https://todo.api.devcode.gethired.id/activity-groups/${params}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  ).then(x => {
+    return x.json();
+  });
+};
+
+export const UpdateTodoTitle = (params, value) => {
+  return fetch(
+    `https://todo.api.devcode.gethired.id/activity-groups/${params}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: value,
+      }),
+    }
+  ).then(x => {
+    return x.json();
+  });
+};
+
+export const Refetch = () => {
+  return fetch('https://todo.api.devcode.gethired.id/activity-groups', {
+    method: 'GET',
+  }).then(x => {
+    return x.json();
+  });
 };
