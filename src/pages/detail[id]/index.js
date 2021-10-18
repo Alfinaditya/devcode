@@ -59,6 +59,7 @@ const Detail = () => {
 	const [refetchTodoItems, setRefetchTodoItems] = useState('');
 	const [initConfirmModal, setInitConfirmModal] = useState(false);
 	const [params, setParams] = useState('');
+	const [sort, setSort] = useState('Ascending');
 
 	function handleUpdateTodoTitle(e) {
 		e.preventDefault();
@@ -90,11 +91,17 @@ const Detail = () => {
 			});
 		});
 	}
-
 	return (
 		<div className={styles.card}>
 			<span onClick={() => history.push('/')}>Back</span>
 			<h1>{watchTitleField}</h1>
+			<div>
+				<div onClick={() => setSort('Ascending')}>Terbaru</div>
+				<div onClick={() => setSort('Descending')}>Terlama</div>
+				<div onClick={() => setSort('A-Z')}>A - Z</div>
+				<div onClick={() => setSort('Z-A')}>Z - A</div>
+				<div onClick={() => setSort('notCompleted')}>Belum Selesai</div>
+			</div>
 			{initConfirmModal && (
 				<>
 					<button onClick={() => setInitConfirmModal(false)}>No</button>
@@ -148,41 +155,95 @@ const Detail = () => {
 			{todo && !todo.todo_items.length && !refetchTodoItems && (
 				<p>Buat List item kamu !</p>
 			)}
-			{isLoading ? (
+			{todo &&
+				todo.todo_items
+					.sort((a, b) => {
+						switch (sort) {
+							case 'Ascending':
+								if (a.id > b.id) {
+									return -1;
+								}
+								if (a.id < b.id) {
+									return 1;
+								}
+							case 'A-Z':
+								if (a.title < b.title) {
+									return -1;
+								}
+								if (a.title > b.title) {
+									return 1;
+								}
+							case 'Z-A':
+								if (a.title > b.title) {
+									return -1;
+								}
+								if (a.title < b.title) {
+									return 1;
+								}
+							case 'Descending':
+								if (a.id < b.id) {
+									return -1;
+								}
+								if (a.id > b.id) {
+									return 1;
+								}
+						}
+					})
+					.filter(a => {
+						if (sort === 'notCompleted') {
+							return a.is_active === 1;
+						} else {
+							return a;
+						}
+					})
+					.map(todoItem => (
+						<div key={todoItem.id}>
+							<p>{todoItem.id}</p>
+							<h1>{todoItem.title}</h1>
+							<p>{todoItem.is_active}</p>
+						</div>
+					))}
+			{/* {isLoading ? (
 				<Loading />
 			) : !refetchTodoItems ? (
 				todo &&
-				todo.todo_items.map(todoItem => (
-					<div key={todoItem.id}>
-						<p>{todoItem.priority}</p>
-						<p>{todoItem.title}</p>
-						<p
-							onClick={e => {
-								setInitConfirmModal(true);
-								setParams(todoItem.id);
-							}}
-						>
-							DELETE
-						</p>
-					</div>
-				))
+				todo.todo_items.sort(todoItem => {
+					console.log(todoItem);
+					return (
+						<div key={todoItem.id}>
+							<p>{todoItem.priority}</p>
+							<p>{todoItem.title}</p>
+							<p
+								onClick={e => {
+									setInitConfirmModal(true);
+									setParams(todoItem.id);
+								}}
+							>
+								DELETE
+							</p>
+						</div>
+					);
+				})
 			) : (
 				refetchTodoItems &&
-				refetchTodoItems.map(todoItem => (
-					<div key={todoItem.id}>
-						<p>{todoItem.priority}</p>
-						<p>{todoItem.title}</p>
-						<p
-							onClick={e => {
-								setInitConfirmModal(true);
-								setParams(todoItem.id);
-							}}
-						>
-							DELETE
-						</p>
-					</div>
-				))
-			)}
+				refetchTodoItems.map(todoItem => {
+					console.log(todoItem);
+					return (
+						<div key={todoItem.id}>
+							<p>{todoItem.priority}</p>
+							<p>{todoItem.title}</p>
+							<p
+								onClick={e => {
+									setInitConfirmModal(true);
+									setParams(todoItem.id);
+								}}
+							>
+								DELETE
+							</p>
+						</div>
+					);
+				})
+			)} */}
 		</div>
 	);
 };
