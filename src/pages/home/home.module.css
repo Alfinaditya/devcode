@@ -1,3 +1,74 @@
+.title {
+	color: var(--black-color);
+	font-weight: 700;
+	size: 36px;
+}
+.home {
+	max-width: 1000px;
+	margin: auto;
+}
+.header {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.addButton {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 54px;
+	width: 159px;
+	border-radius: 45px;
+	font-size: 18px;
+	font-weight: 600;
+	color: white;
+	background-color: var(--main-color);
+	border: 0;
+	cursor: pointer;
+	font-family: inherit;
+}
+
+.addButtonText {
+	margin-left: 10px;
+}
 .card {
-  cursor: pointer;
+	cursor: pointer;
+	height: 234px;
+	width: 235px;
+	border-radius: 12px;
+	box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 10px;
+	padding: 22px 27px;
+	margin-bottom: 26px;
+}
+.cardContainer {
+	padding: 0 20px 0 0;
+	width: 25%;
+}
+.cards {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.cardFooter {
+	display: flex;
+	justify-content: space-between;
+}
+
+.cardTitle {
+	color: var(--black-color);
+	font-size: 18px;
+	font-weight: 700;
+	word-break: break-all;
+	width: 182px;
+}
+.cardDate {
+	font-size: 14px;
+	color: #888888;
+	font-weight: 500;
 }

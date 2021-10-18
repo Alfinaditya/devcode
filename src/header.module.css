@@ -1,12 +1,16 @@
 .brand {
-  color: white;
+	color: white;
 }
 
 .container {
-  max-width: 1000px;
-  margin: auto;
+	max-width: 1000px;
+	height: 105px;
+	display: flex;
+	align-items: center;
+	margin: auto;
 }
 
 .nav {
-  background-color: var(--main-color);
+	background-color: var(--main-color);
+	height: 105px;
 }
