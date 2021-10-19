@@ -13,6 +13,7 @@
 	margin-bottom: 80px;
 }
 
+/* card */
 .card {
 	cursor: pointer;
 	height: 234px;
@@ -53,11 +54,11 @@
 	font-weight: 500;
 }
 
+/* modal */
 .modal {
 	position: absolute;
 	height: 355px;
 	width: 490px;
-	border-radius: 0px;
 	background: white;
 	box-shadow: 0px 4px 10px 0px #0000001a;
 	position: fixed;
@@ -118,6 +119,8 @@
 	font-weight: 500;
 	margin-left: 10px;
 }
+
+/* button */
 .cancelButton {
 	height: 54px;
 	width: 150px;

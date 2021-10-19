@@ -1,0 +1,160 @@
+.detail {
+	max-width: 1000px;
+	margin: auto;
+}
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.right {
+	display: flex;
+	align-items: center;
+}
+.right img {
+	cursor: pointer;
+}
+.right button {
+	margin-left: 20px;
+}
+.back {
+	cursor: pointer;
+}
+
+/* Dropdown */
+.dropdown {
+	position: relative;
+}
+.dropdownItems {
+	position: absolute;
+	background: white;
+}
+
+.dropdownItem {
+	display: flex;
+	align-items: center;
+}
+
+.dropdownItem img {
+	width: 18px;
+	margin-left: 10px;
+}
+.dropdownItem span {
+	display: flex;
+	align-items: center;
+	color: #4a4a4a;
+	font-size: 16px;
+	margin-left: 10px;
+}
+.dropdownItems div {
+	cursor: pointer;
+	height: 52px;
+	width: 235px;
+	border: 1px solid #e5e5e5;
+}
+
+/* Title Container */
+.titleContainer {
+	display: flex;
+	align-items: center;
+}
+.titleContainer h1 {
+	font-size: 36px;
+	font-weight: 700;
+}
+.titleContainer form input {
+	font-family: inherit;
+	font-size: 36px;
+	font-weight: 700;
+	background: #f4f4f4;
+	border: none;
+	border-bottom: 1px solid var(--black-color);
+	outline: none;
+}
+.updateTitleButton {
+	cursor: pointer;
+}
+
+/* Title */
+.title {
+	display: flex;
+	align-items: center;
+}
+.title h1 {
+	margin-right: 15px;
+}
+
+/* Todo items Empty  */
+.todoItemsEmptyIcon {
+	display: block;
+	margin: auto;
+}
+
+/* Modal */
+
+.modalAdd {
+	position: absolute;
+	background: white;
+	height: 403px;
+	width: 830px;
+	box-shadow: 0px 4px 10px 0px #0000001a;
+	position: fixed;
+	margin: auto;
+	inset: 0;
+	border-radius: 12px;
+	z-index: 1;
+}
+.modalAdd input:focus {
+	box-shadow: 0px 4px 10px 0px #0000001a;
+	outline: 1px solid var(--main-color);
+}
+.modalAddHeader {
+	border-bottom: 1px solid #e5e5e5;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 70px;
+	padding: 24px 30px;
+}
+.modalAddHeader h1 {
+	font-size: 18px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 27px;
+	letter-spacing: 0em;
+	text-align: left;
+}
+.modalAddHeader img {
+	cursor: pointer;
+}
+.modalAddBody {
+	width: 759px;
+	margin: auto;
+}
+.modalAddBody label {
+	font-size: 12px;
+	font-weight: 600;
+	padding-bottom: 15px;
+	width: 100%;
+}
+.modalAddBody input {
+	height: 52px;
+	width: 759px;
+	left: 30px;
+	top: 135px;
+	border-radius: 6px;
+	border: 1px solid #e5e5e5;
+	font-family: inherit;
+	padding: 18px;
+	font-size: 16px;
+	font-weight: 400;
+}
+.modalOverlay {
+	width: 100%;
+	height: 100vh;
+	top: 0;
+	background: var(--black-color);
+	position: fixed;
+	opacity: 0.2;
+}

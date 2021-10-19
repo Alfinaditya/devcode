@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styles from './detail[id].module.css';
 import {
 	CreateTodoItems,
 	DetailTodo,
@@ -10,6 +9,17 @@ import {
 import { useParams, useHistory } from 'react-router-dom';
 import Loading from '../../components/loading/Loading';
 import plusSvg from '../../assets/plus.svg';
+import pencil from '../../assets/pencil.svg';
+import back from '../../assets/back.svg';
+import todoItemsEmpty from '../../assets/todoItemsEmpty.svg';
+import ascendingSort from '../../assets/ascendingSort.svg';
+import descendingSort from '../../assets/descendingSort.svg';
+import azSort from '../../assets/azSort.svg';
+import zaSort from '../../assets/zaSort.svg';
+import notCompletedSort from '../../assets/notCompletedSort.svg';
+import sortButton from '../../assets/sortButton.svg';
+import close from '../../assets/close.svg';
+import styles from './detail.module.css';
 
 const PRIORITY_CONDITIONS = [
 	{
@@ -38,6 +48,18 @@ const PRIORITY_CONDITIONS = [
 		value: 'very-low',
 	},
 ];
+const SORT_TYPES = [
+	{ id: 1, type: 'Ascending', text: 'Terbaru', icon: ascendingSort },
+	{ id: 2, type: 'Descending', text: 'Terlama', icon: descendingSort },
+	{ id: 3, type: 'A-Z', text: 'A-Z', icon: azSort },
+	{ id: 4, type: 'Z-A', text: 'Z-A', icon: zaSort },
+	{
+		id: 5,
+		type: 'notCompleted',
+		text: 'Belum Selesai',
+		icon: notCompletedSort,
+	},
+];
 
 const Detail = () => {
 	const { id } = useParams();
@@ -57,11 +79,13 @@ const Detail = () => {
 		PRIORITY_CONDITIONS[0].value
 	);
 	const [showPriorityOptions, setshowPriorityOptions] = useState(false);
-	const [refetchTodoItems, setRefetchTodoItems] = useState('');
-	const [initConfirmModal, setInitConfirmModal] = useState(false);
-	const [initTodoItemModal, setInitTodoItemModal] = useState(false);
+	const [refetchTodoItems, setRefetchTodoItems] = useState(false);
+	const [showAddTodoItemModal, setShowAddTodoItemModal] = useState(false);
+	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [showUpdateTitleForm, setshowUpdateTitleForm] = useState(false);
 	const [params, setParams] = useState('');
 	const [sort, setSort] = useState('Ascending');
+	const [showDropdown, setShowDropdown] = useState(false);
 
 	function handleUpdateTodoTitle(e) {
 		e.preventDefault();
@@ -88,88 +112,155 @@ const Detail = () => {
 		RemoveTodoItems(params).then(() => {
 			RefetchTodoItems(todo.id).then(refetchRes => {
 				setRefetchTodoItems(refetchRes.data);
-				setInitConfirmModal(false);
+				setShowConfirmModal(false);
 				setIsLoading(false);
 			});
 		});
 	}
 	return (
 		<>
-			{initConfirmModal && (
+			{showConfirmModal && (
 				<>
-					<button onClick={() => setInitConfirmModal(false)}>No</button>
-					<button
-						onClick={() => {
-							handleDelete();
-						}}
-					>
-						yes
-					</button>
+					<div>
+						<button onClick={() => setShowConfirmModal(false)}>No</button>
+						<button
+							onClick={() => {
+								handleDelete();
+							}}
+						>
+							yes
+						</button>
+					</div>
+					<div className={styles.modalOverlay}></div>
 				</>
 			)}
-			<div className={styles.card}>
+			<div className={styles.detail}>
 				{/* header */}
-				<span onClick={() => history.push('/')}>Back</span>
-				<h1>{watchTitleField}</h1>
-				{/* sort */}
-				<div>
-					<div onClick={() => setSort('Ascending')}>Terbaru</div>
-					<div onClick={() => setSort('Descending')}>Terlama</div>
-					<div onClick={() => setSort('A-Z')}>A - Z</div>
-					<div onClick={() => setSort('Z-A')}>Z - A</div>
-					<div onClick={() => setSort('notCompleted')}>Belum Selesai</div>
+				<div className={styles.header}>
+					<div className={styles.titleContainer}>
+						<img
+							onClick={() => history.push('/')}
+							src={back}
+							alt='Back to Homepage'
+							className={styles.back}
+						/>
+						{!showUpdateTitleForm && (
+							<div className={styles.title}>
+								<h1>{watchTitleField}</h1>
+								<img
+									src={pencil}
+									onClick={() => setshowUpdateTitleForm(true)}
+									alt='Submit'
+									className={styles.updateTitleButton}
+								/>
+							</div>
+						)}
+						{showUpdateTitleForm && (
+							<form onSubmit={e => handleUpdateTodoTitle(e)}>
+								<input
+									type='text'
+									value={watchTitleField}
+									onChange={e => setWatchTitleField(e.target.value)}
+								/>
+								<img
+									src={pencil}
+									onClick={() => setshowUpdateTitleForm(false)}
+									alt='Submit'
+									className={styles.updateTitleButton}
+								/>
+							</form>
+						)}
+					</div>
+
+					{/* sort */}
+					<div className={styles.right}>
+						<div>
+							<img
+								onClick={() => setShowDropdown(!showDropdown)}
+								src={sortButton}
+								alt='Sort'
+							/>
+							{showDropdown && (
+								<div className={styles.dropdown}>
+									<div className={styles.dropdownItems}>
+										{SORT_TYPES.map(SORT_TYPE => (
+											<div
+												key={SORT_TYPE.id}
+												onClick={() => setSort(SORT_TYPE.type)}
+												className={styles.dropdownItem}
+											>
+												<img src={SORT_TYPE.icon} alt={SORT_TYPE.text} />
+												<span>{SORT_TYPE.text}</span>
+											</div>
+										))}
+									</div>
+								</div>
+							)}
+						</div>
+						<button
+							className='addButton'
+							onClick={() => setShowAddTodoItemModal(!showAddTodoItemModal)}
+						>
+							<img src={plusSvg} alt='Tambah' />
+							<span className='addButtonText'>Tambah</span>
+						</button>
+					</div>
 				</div>
-				<form onSubmit={e => handleUpdateTodoTitle(e)}>
-					<input
-						type='text'
-						value={watchTitleField}
-						onChange={e => setWatchTitleField(e.target.value)}
-					/>
-					<button type='submit'>Submit shit</button>
-				</form>
-				<button className='addButton'>
-					<img src={plusSvg} alt='Tambah' />
-					<span
-						onClick={() => setInitTodoItemModal(true)}
-						className='addButtonText'
-					>
-						Tambah
-					</span>
-				</button>
 
 				{/* Add Todo item*/}
-				{initTodoItemModal && (
-					<form onSubmit={e => handleAdd(e)}>
-						<label>Title</label>
-						<input
-							value={title}
-							onChange={e => setTitle(e.target.value)}
-							type='text'
-						/>
-						<label>Priority</label>
-						<div onClick={() => setshowPriorityOptions(!showPriorityOptions)}>
-							{showPriorityOptions ? 'Pilih Priority' : currentpriorityName}
-						</div>
-						{showPriorityOptions &&
-							PRIORITY_CONDITIONS.map(PRIORITY_CONDITION => (
+				{showAddTodoItemModal && (
+					<>
+						<form className={styles.modalAdd} onSubmit={e => handleAdd(e)}>
+							<div className={styles.modalAddHeader}>
+								<h1>Tambah List item</h1>
+								<img
+									onClick={() => setShowAddTodoItemModal(false)}
+									src={close}
+									alt='Close'
+								/>
+							</div>
+							<div className={styles.modalAddBody}>
+								<label>NAMA LIST ITEM</label>
+								<input
+									value={title}
+									onChange={e => setTitle(e.target.value)}
+									type='text'
+									placeholder='Tambahkan nama Activity'
+								/>
+								<label>PRIORITY</label>
 								<div
-									key={PRIORITY_CONDITION.id}
-									id={PRIORITY_CONDITION.value}
-									onClick={e => {
-										setCurrentPriorityValue(e.currentTarget.id);
-										setCurrentPriorityName(e.currentTarget.textContent);
-										setshowPriorityOptions(false);
-									}}
+									onClick={() => setshowPriorityOptions(!showPriorityOptions)}
 								>
-									{PRIORITY_CONDITION.name}
+									{showPriorityOptions ? 'Pilih Priority' : currentpriorityName}
 								</div>
-							))}
-						<button disabled={!title}>Submit</button>
-					</form>
+								{showPriorityOptions &&
+									PRIORITY_CONDITIONS.map(PRIORITY_CONDITION => (
+										<div
+											key={PRIORITY_CONDITION.id}
+											id={PRIORITY_CONDITION.value}
+											onClick={e => {
+												setCurrentPriorityValue(e.currentTarget.id);
+												setCurrentPriorityName(e.currentTarget.textContent);
+												setshowPriorityOptions(false);
+											}}
+										>
+											{PRIORITY_CONDITION.name}
+										</div>
+									))}
+							</div>
+							<button disabled={!title}>Submit</button>
+						</form>
+					</>
 				)}
+
 				{/* Todo Items Empty */}
 				{todo && !todo.todo_items.length && !refetchTodoItems && (
-					<p>Buat List item kamu !</p>
+					<img
+						className={styles.todoItemsEmptyIcon}
+						src={todoItemsEmpty}
+						alt='Empty todo items'
+						onClick={() => setShowAddTodoItemModal(true)}
+					/>
 				)}
 				{isLoading ? (
 					<Loading />
@@ -229,7 +320,7 @@ const Detail = () => {
 									<p>{todoItem.title}</p>
 									<p
 										onClick={e => {
-											setInitConfirmModal(true);
+											setShowConfirmModal(true);
 											setParams(todoItem.id);
 										}}
 									>
@@ -293,7 +384,7 @@ const Detail = () => {
 									<p>{todoItem.title}</p>
 									<p
 										onClick={e => {
-											setInitConfirmModal(true);
+											setShowConfirmModal(true);
 											setParams(todoItem.id);
 										}}
 									>
