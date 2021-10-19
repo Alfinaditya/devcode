@@ -3,6 +3,7 @@
 :root {
 	--main-color: #16abf8;
 	--black-color: #111111;
+	--delete-color: #ed4c5c;
 }
 
 * {
@@ -13,4 +14,28 @@
 
 body {
 	font-family: 'Poppins', sans-serif;
+	background: #f4f4f4;
+	color: #111111;
+}
+
+/* Global class */
+
+.addButton {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 54px;
+	width: 159px;
+	border-radius: 45px;
+	font-size: 18px;
+	font-weight: 600;
+	color: white;
+	background-color: var(--main-color);
+	border: 0;
+	cursor: pointer;
+	font-family: inherit;
+}
+
+.addButtonText {
+	margin-left: 10px;
 }

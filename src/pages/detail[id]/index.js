@@ -9,6 +9,7 @@ import {
 } from '../../api/todos';
 import { useParams, useHistory } from 'react-router-dom';
 import Loading from '../../components/loading/Loading';
+import plusSvg from '../../assets/plus.svg';
 
 const PRIORITY_CONDITIONS = [
 	{
@@ -58,6 +59,7 @@ const Detail = () => {
 	const [showPriorityOptions, setshowPriorityOptions] = useState(false);
 	const [refetchTodoItems, setRefetchTodoItems] = useState('');
 	const [initConfirmModal, setInitConfirmModal] = useState(false);
+	const [initTodoItemModal, setInitTodoItemModal] = useState(false);
 	const [params, setParams] = useState('');
 	const [sort, setSort] = useState('Ascending');
 
@@ -92,16 +94,7 @@ const Detail = () => {
 		});
 	}
 	return (
-		<div className={styles.card}>
-			<span onClick={() => history.push('/')}>Back</span>
-			<h1>{watchTitleField}</h1>
-			<div>
-				<div onClick={() => setSort('Ascending')}>Terbaru</div>
-				<div onClick={() => setSort('Descending')}>Terlama</div>
-				<div onClick={() => setSort('A-Z')}>A - Z</div>
-				<div onClick={() => setSort('Z-A')}>Z - A</div>
-				<div onClick={() => setSort('notCompleted')}>Belum Selesai</div>
-			</div>
+		<>
 			{initConfirmModal && (
 				<>
 					<button onClick={() => setInitConfirmModal(false)}>No</button>
@@ -114,137 +107,204 @@ const Detail = () => {
 					</button>
 				</>
 			)}
-			<form onSubmit={e => handleUpdateTodoTitle(e)}>
-				<input
-					type='text'
-					value={watchTitleField}
-					onChange={e => setWatchTitleField(e.target.value)}
-				/>
-				<button type='submit'>Submit shit</button>
-			</form>
-			<button>Tambah</button>
-
-			<form onSubmit={e => handleAdd(e)}>
-				<label>Title</label>
-				<input
-					value={title}
-					onChange={e => setTitle(e.target.value)}
-					type='text'
-				/>
-				<label>Priority</label>
-				<div onClick={() => setshowPriorityOptions(!showPriorityOptions)}>
-					{showPriorityOptions ? 'Pilih Priority' : currentpriorityName}
+			<div className={styles.card}>
+				{/* header */}
+				<span onClick={() => history.push('/')}>Back</span>
+				<h1>{watchTitleField}</h1>
+				{/* sort */}
+				<div>
+					<div onClick={() => setSort('Ascending')}>Terbaru</div>
+					<div onClick={() => setSort('Descending')}>Terlama</div>
+					<div onClick={() => setSort('A-Z')}>A - Z</div>
+					<div onClick={() => setSort('Z-A')}>Z - A</div>
+					<div onClick={() => setSort('notCompleted')}>Belum Selesai</div>
 				</div>
-				{showPriorityOptions &&
-					PRIORITY_CONDITIONS.map(PRIORITY_CONDITION => (
-						<div
-							key={PRIORITY_CONDITION.id}
-							id={PRIORITY_CONDITION.value}
-							onClick={e => {
-								setCurrentPriorityValue(e.currentTarget.id);
-								setCurrentPriorityName(e.currentTarget.textContent);
-								setshowPriorityOptions(false);
-							}}
-						>
-							{PRIORITY_CONDITION.name}
-						</div>
-					))}
-				<button disabled={!title}>Submit</button>
-			</form>
+				<form onSubmit={e => handleUpdateTodoTitle(e)}>
+					<input
+						type='text'
+						value={watchTitleField}
+						onChange={e => setWatchTitleField(e.target.value)}
+					/>
+					<button type='submit'>Submit shit</button>
+				</form>
+				<button className='addButton'>
+					<img src={plusSvg} alt='Tambah' />
+					<span
+						onClick={() => setInitTodoItemModal(true)}
+						className='addButtonText'
+					>
+						Tambah
+					</span>
+				</button>
 
-			{todo && !todo.todo_items.length && !refetchTodoItems && (
-				<p>Buat List item kamu !</p>
-			)}
-			{todo &&
-				todo.todo_items
-					.sort((a, b) => {
-						switch (sort) {
-							case 'Ascending':
-								if (a.id > b.id) {
-									return -1;
-								}
-								if (a.id < b.id) {
-									return 1;
-								}
-							case 'A-Z':
-								if (a.title < b.title) {
-									return -1;
-								}
-								if (a.title > b.title) {
-									return 1;
-								}
-							case 'Z-A':
-								if (a.title > b.title) {
-									return -1;
-								}
-								if (a.title < b.title) {
-									return 1;
-								}
-							case 'Descending':
-								if (a.id < b.id) {
-									return -1;
-								}
-								if (a.id > b.id) {
-									return 1;
-								}
-						}
-					})
-					.filter(a => {
-						if (sort === 'notCompleted') {
-							return a.is_active === 1;
-						} else {
-							return a;
-						}
-					})
-					.map(todoItem => (
-						<div key={todoItem.id}>
-							<p>{todoItem.id}</p>
-							<h1>{todoItem.title}</h1>
-							<p>{todoItem.is_active}</p>
+				{/* Add Todo item*/}
+				{initTodoItemModal && (
+					<form onSubmit={e => handleAdd(e)}>
+						<label>Title</label>
+						<input
+							value={title}
+							onChange={e => setTitle(e.target.value)}
+							type='text'
+						/>
+						<label>Priority</label>
+						<div onClick={() => setshowPriorityOptions(!showPriorityOptions)}>
+							{showPriorityOptions ? 'Pilih Priority' : currentpriorityName}
 						</div>
-					))}
-			{/* {isLoading ? (
-				<Loading />
-			) : !refetchTodoItems ? (
-				todo &&
-				todo.todo_items.sort(todoItem => {
-					console.log(todoItem);
-					return (
-						<div key={todoItem.id}>
-							<p>{todoItem.priority}</p>
-							<p>{todoItem.title}</p>
-							<p
-								onClick={e => {
-									setInitConfirmModal(true);
-									setParams(todoItem.id);
-								}}
-							>
-								DELETE
-							</p>
-						</div>
-					);
-				})
-			) : (
-				refetchTodoItems &&
-				refetchTodoItems.map(todoItem => {
-					console.log(todoItem);
-					return (
-						<div key={todoItem.id}>
-							<p>{todoItem.priority}</p>
-							<p>{todoItem.title}</p>
-							<p
-								onClick={e => {
-									setInitConfirmModal(true);
-									setParams(todoItem.id);
-								}}
-							>
-								DELETE
-							</p>
-						</div>
-					);
-				})
-			)} */}
-		</div>
+						{showPriorityOptions &&
+							PRIORITY_CONDITIONS.map(PRIORITY_CONDITION => (
+								<div
+									key={PRIORITY_CONDITION.id}
+									id={PRIORITY_CONDITION.value}
+									onClick={e => {
+										setCurrentPriorityValue(e.currentTarget.id);
+										setCurrentPriorityName(e.currentTarget.textContent);
+										setshowPriorityOptions(false);
+									}}
+								>
+									{PRIORITY_CONDITION.name}
+								</div>
+							))}
+						<button disabled={!title}>Submit</button>
+					</form>
+				)}
+				{/* Todo Items Empty */}
+				{todo && !todo.todo_items.length && !refetchTodoItems && (
+					<p>Buat List item kamu !</p>
+				)}
+				{isLoading ? (
+					<Loading />
+				) : !refetchTodoItems ? (
+					todo &&
+					todo.todo_items
+						.sort((a, b) => {
+							switch (sort) {
+								case 'Ascending':
+									if (a.id > b.id) {
+										return -1;
+									}
+									if (a.id < b.id) {
+										return 1;
+									}
+									break;
+								case 'A-Z':
+									if (a.title < b.title) {
+										return -1;
+									}
+									if (a.title > b.title) {
+										return 1;
+									}
+									break;
+								case 'Z-A':
+									if (a.title > b.title) {
+										return -1;
+									}
+									if (a.title < b.title) {
+										return 1;
+									}
+									break;
+								case 'Descending':
+									if (a.id < b.id) {
+										return -1;
+									}
+									if (a.id > b.id) {
+										return 1;
+									}
+									break;
+								default:
+									break;
+							}
+						})
+						.filter(a => {
+							if (sort === 'notCompleted') {
+								return a.is_active === 1;
+							} else {
+								return a;
+							}
+						})
+						.map(todoItem => {
+							console.log(todoItem);
+							return (
+								<div key={todoItem.id}>
+									<p>{todoItem.priority}</p>
+									<p>{todoItem.title}</p>
+									<p
+										onClick={e => {
+											setInitConfirmModal(true);
+											setParams(todoItem.id);
+										}}
+									>
+										DELETE
+									</p>
+								</div>
+							);
+						})
+				) : (
+					refetchTodoItems &&
+					refetchTodoItems
+						.sort((a, b) => {
+							switch (sort) {
+								case 'Ascending':
+									if (a.id > b.id) {
+										return -1;
+									}
+									if (a.id < b.id) {
+										return 1;
+									}
+									break;
+								case 'A-Z':
+									if (a.title < b.title) {
+										return -1;
+									}
+									if (a.title > b.title) {
+										return 1;
+									}
+									break;
+								case 'Z-A':
+									if (a.title > b.title) {
+										return -1;
+									}
+									if (a.title < b.title) {
+										return 1;
+									}
+									break;
+								case 'Descending':
+									if (a.id < b.id) {
+										return -1;
+									}
+									if (a.id > b.id) {
+										return 1;
+									}
+									break;
+								default:
+									break;
+							}
+						})
+						.filter(a => {
+							if (sort === 'notCompleted') {
+								return a.is_active === 1;
+							} else {
+								return a;
+							}
+						})
+						.map(todoItem => {
+							return (
+								<div key={todoItem.id}>
+									<p>{todoItem.priority}</p>
+									<p>{todoItem.title}</p>
+									<p
+										onClick={e => {
+											setInitConfirmModal(true);
+											setParams(todoItem.id);
+										}}
+									>
+										DELETE
+									</p>
+								</div>
+							);
+						})
+				)}
+			</div>
+		</>
 	);
 };
 

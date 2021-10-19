@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router';
 import { GetTodos, CreateTodo, Refetch, RemoveTodo } from '../../api/todos';
 import styles from './home.module.css';
@@ -7,9 +7,14 @@ import Loading from '../../components/loading/Loading';
 import plusSvg from '../../assets/plus.svg';
 import todosEmptySvg from '../../assets/todosEmpty.svg';
 import trashSvg from '../../assets/trash.svg';
+import modalDeleteIcon from '../../assets/modalDeleteIcon.svg';
+import modalInformationIcon from '../../assets/modalInformationIcon.svg';
+import Animated from 'react-mount-animation';
+import UseScrollBlock from '../../hooks/UseScrollBlock';
 
 const Home = () => {
 	const history = useHistory();
+	const [blockScroll, allowScroll] = UseScrollBlock();
 	const {
 		data: todos,
 		setData: setTodos,
@@ -18,12 +23,15 @@ const Home = () => {
 	} = GetTodos();
 	const [initConfirmModal, setInitConfirmModal] = useState(false);
 	const [params, setParams] = useState('');
+	const [deleteTitle, setDeleteTitle] = useState('');
+	const [successAlert, setSuccessAlert] = useState(false);
 
 	function handleAdd() {
 		setIsLoading(true);
 		CreateTodo().then(() => {
 			Refetch().then(refetchRes => {
 				setTodos(refetchRes.data);
+				setIsLoading(false);
 				setIsLoading(false);
 			});
 		});
@@ -36,70 +44,145 @@ const Home = () => {
 				setTodos(refetchRes.data);
 				setInitConfirmModal(false);
 				setIsLoading(false);
+				setSuccessAlert(true);
 			});
 		});
 	}
-
+	{
+		initConfirmModal ? blockScroll() : allowScroll();
+	}
 	return (
-		<div className={styles.home}>
-			<div className={styles.header}>
-				<h1 className={styles.title}>Activity</h1>
-				<button className={styles.addButton} onClick={handleAdd}>
-					<img src={plusSvg} alt='Tambah Activity' />
-					<span className={styles.addButtonText}>Tambah</span>
-				</button>
-			</div>
-			{initConfirmModal && (
-				<>
-					<button onClick={() => setInitConfirmModal(false)}>No</button>
-					<button
-						onClick={() => {
-							handleDelete();
-						}}
-					>
-						yes
+		<>
+			<>
+				<Animated.div
+					onClick={() => setSuccessAlert(false)}
+					className={styles.successModal}
+					show={successAlert}
+					mountAnim={`
+					0% {inset: -200% 0 0 0 }
+					100% {inset: 0}
+					 `}
+					unmountAnim={`
+					0% {inset: 0}
+					100% {inset: -200% 0 0 0 }
+					`}
+				>
+					<img src={modalInformationIcon} alt='Information' />
+					<p className={styles.successModalText}>Activity berhasil dihapus</p>
+				</Animated.div>
+				<Animated.div
+					show={successAlert}
+					onClick={() => setSuccessAlert(false)}
+					className={styles.modalOverlay}
+					mountAnim={`
+					 0% {opacity:0}
+					 100% {opacity:0.2}
+					 `}
+					unmountAnim={`
+					 0% {opacity:0.2}
+					 100% {opacity:0}
+					`}
+				></Animated.div>
+			</>
+			<>
+				<Animated.div
+					show={initConfirmModal}
+					onClick={() => setInitConfirmModal(!initConfirmModal)}
+					mountAnim={`
+					 0% {opacity:0}
+					 100% {opacity:0.2}
+					 `}
+					unmountAnim={`
+					 0% {opacity:0.2}
+					 100% {opacity:0}
+					`}
+					className={styles.modalOverlay}
+				/>
+				<Animated.div
+					show={initConfirmModal}
+					mountAnim={`
+					0% {inset: 200% 0 0 0 }
+					100% {inset: 0}
+					 `}
+					unmountAnim={`
+					0% {inset: 0}
+					100% {inset: 200% 0 0 0 }
+					`}
+					className={styles.modal}
+				>
+					<img src={modalDeleteIcon} alt='Icon' />
+					<div className={styles.modalText}>
+						<span>Apakah anda yakin menghapus activity </span>
+						<span>“{deleteTitle}”?</span>
+					</div>
+					<div>
+						<button
+							className={styles.cancelButton}
+							onClick={() => setInitConfirmModal(false)}
+						>
+							Batal
+						</button>
+						<button
+							onClick={() => {
+								handleDelete();
+							}}
+							className={styles.deleteButton}
+						>
+							Hapus
+						</button>
+					</div>
+				</Animated.div>
+			</>
+			{/* )} */}
+			<div className={styles.home}>
+				<div className={styles.header}>
+					<h1 className={styles.title}>Activity</h1>
+					<button className='addButton' onClick={handleAdd}>
+						<img src={plusSvg} alt='Tambah Activity' />
+						<span className='addButtonText'>Tambah</span>
 					</button>
-				</>
-			)}
-			{isLoading ? (
-				<Loading />
-			) : (
-				<>
-					<div className={styles.cards}>
-						{todos &&
-							todos.map(todo => {
-								const { date, month, years } = convertDate(todo.created_at);
-								return (
-									<div key={todo.id} className={styles.cardContainer}>
-										<div className={styles.card}>
-											<h1
-												className={styles.cardTitle}
-												onClick={() => history.push(`/detail/${todo.id}`)}
-											>
-												{todo.title}
-											</h1>
-											<div className={styles.cardFooter}>
-												<p className={styles.cardDate}>
-													{date} {month} {years}
-												</p>
-												<img
-													src={trashSvg}
-													alt='Delete'
-													onClick={() => {
-														setInitConfirmModal(true);
-														setParams(todo.id);
-													}}
-												/>
+				</div>
+				{isLoading ? (
+					<Loading />
+				) : (
+					<>
+						<div className={styles.cards}>
+							{todos &&
+								todos.map(todo => {
+									const { date, month, years } = convertDate(todo.created_at);
+									return (
+										<div key={todo.id} className={styles.cardContainer}>
+											<div className={styles.card}>
+												<h1
+													className={styles.cardTitle}
+													onClick={() => history.push(`/detail/${todo.id}`)}
+												>
+													{todo.title}
+												</h1>
+												<div className={styles.cardFooter}>
+													<p className={styles.cardDate}>
+														{date} {month} {years}
+													</p>
+													<img
+														src={trashSvg}
+														alt='Delete'
+														onClick={() => {
+															setInitConfirmModal(true);
+															setParams(todo.id);
+															setDeleteTitle(todo.title);
+														}}
+													/>
+												</div>
 											</div>
 										</div>
-									</div>
-								);
-							})}
-					</div>
-					{!todos.length && <img src={todosEmptySvg} alt='No todos' />}
-				</>
-			)}
-		</div>
+									);
+								})}
+						</div>
+						{!todos.length && <img src={todosEmptySvg} alt='No todos' />}
+					</>
+				)}
+			</div>
+		</>
 	);
 };
 
