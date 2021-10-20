@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { GetTodos, CreateTodo, Refetch, RemoveTodo } from '../../api/todos';
 import styles from './home.module.css';
@@ -53,87 +53,86 @@ const Home = () => {
 	}
 	return (
 		<>
-			<>
-				<Animated.div
-					onClick={() => setSuccessAlert(false)}
-					className={styles.successModal}
-					show={successAlert}
-					mountAnim={`
+			{/* Succes Alert */}
+			<Animated.div
+				onClick={() => setSuccessAlert(false)}
+				className={styles.successModal}
+				show={successAlert}
+				mountAnim={`
 					0% {inset: -200% 0 0 0 }
 					100% {inset: 0}
 					 `}
-					unmountAnim={`
+				unmountAnim={`
 					0% {inset: 0}
 					100% {inset: -200% 0 0 0 }
 					`}
-				>
-					<img src={modalInformationIcon} alt='Information' />
-					<p className={styles.successModalText}>Activity berhasil dihapus</p>
-				</Animated.div>
-				<Animated.div
-					show={successAlert}
-					onClick={() => setSuccessAlert(false)}
-					className={styles.modalOverlay}
-					mountAnim={`
+			>
+				<img src={modalInformationIcon} alt='Information' />
+				<p className={styles.successModalText}>Activity berhasil dihapus</p>
+			</Animated.div>
+			<Animated.div
+				show={successAlert}
+				onClick={() => setSuccessAlert(false)}
+				className={styles.modalOverlay}
+				mountAnim={`
 					 0% {opacity:0}
 					 100% {opacity:0.2}
 					 `}
-					unmountAnim={`
+				unmountAnim={`
 					 0% {opacity:0.2}
 					 100% {opacity:0}
 					`}
-				></Animated.div>
-			</>
-			<>
-				<Animated.div
-					show={initConfirmModal}
-					onClick={() => setInitConfirmModal(!initConfirmModal)}
-					mountAnim={`
+			></Animated.div>
+
+			{/* Confirm Modal */}
+			<Animated.div
+				show={initConfirmModal}
+				onClick={() => setInitConfirmModal(!initConfirmModal)}
+				mountAnim={`
 					 0% {opacity:0}
 					 100% {opacity:0.2}
 					 `}
-					unmountAnim={`
+				unmountAnim={`
 					 0% {opacity:0.2}
 					 100% {opacity:0}
 					`}
-					className={styles.modalOverlay}
-				/>
-				<Animated.div
-					show={initConfirmModal}
-					mountAnim={`
+				className={styles.modalOverlay}
+			/>
+			<Animated.div
+				show={initConfirmModal}
+				mountAnim={`
 					0% {inset: 200% 0 0 0 }
 					100% {inset: 0}
 					 `}
-					unmountAnim={`
+				unmountAnim={`
 					0% {inset: 0}
 					100% {inset: 200% 0 0 0 }
 					`}
-					className={styles.modal}
-				>
-					<img src={modalDeleteIcon} alt='Icon' />
-					<div className={styles.modalText}>
-						<span>Apakah anda yakin menghapus activity </span>
-						<span>“{deleteTitle}”?</span>
-					</div>
-					<div>
-						<button
-							className={styles.cancelButton}
-							onClick={() => setInitConfirmModal(false)}
-						>
-							Batal
-						</button>
-						<button
-							onClick={() => {
-								handleDelete();
-							}}
-							className={styles.deleteButton}
-						>
-							Hapus
-						</button>
-					</div>
-				</Animated.div>
-			</>
-			{/* )} */}
+				className={styles.modal}
+			>
+				<img src={modalDeleteIcon} alt='Icon' />
+				<div className={styles.modalText}>
+					<span>Apakah anda yakin menghapus activity </span>
+					<span>“{deleteTitle}”?</span>
+				</div>
+				<div>
+					<button
+						className={styles.cancelButton}
+						onClick={() => setInitConfirmModal(false)}
+					>
+						Batal
+					</button>
+					<button
+						onClick={() => {
+							handleDelete();
+						}}
+						className={styles.deleteButton}
+					>
+						Hapus
+					</button>
+				</div>
+			</Animated.div>
+
 			<div className={styles.home}>
 				<div className={styles.header}>
 					<h1 className={styles.title}>Activity</h1>
