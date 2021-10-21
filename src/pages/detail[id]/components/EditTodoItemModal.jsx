@@ -3,26 +3,27 @@ import { DetailContext } from '../../../context/detail[id]Context';
 import styles from '../detail.module.css';
 import close from '../../../assets/close.svg';
 import PriorityDropdown from './PriorityDropdown';
+import { GetTodoItem } from '../../../api/todos';
 
-const AddTodoItemModal = () => {
+const EditTodoItemModal = () => {
 	const ctx = useContext(DetailContext);
-
+	// const {}=GetTodoItem()
 	return (
 		<>
-			{ctx.showAddTodoItemModalMemoized.showAddTodoItemModal && (
+			{ctx.showEditTodoItemModalMemoized.showEditTodoItemModal && (
 				<>
 					<form
 						className={styles.modalAdd}
-						onSubmit={e => {
-							ctx.handleAdd();
-							ctx.showAddTodoItemModalMemoized.setShowAddTodoItemModal(false);
+						onSubmit={() => {
+							ctx.handleUpdate();
+							ctx.showEditTodoItemModalMemoized.setShowEditTodoItemModal(false);
 						}}
 					>
 						<div className={styles.modalAddHeader}>
-							<h1>Tambah List item</h1>
+							<h1>Edit List item</h1>
 							<img
 								onClick={() =>
-									ctx.showAddTodoItemModalMemoized.setShowAddTodoItemModal(
+									ctx.showEditTodoItemModalMemoized.setShowEditTodoItemModal(
 										false
 									)
 								}
@@ -57,4 +58,4 @@ const AddTodoItemModal = () => {
 	);
 };
 
-export default AddTodoItemModal;
+export default EditTodoItemModal;

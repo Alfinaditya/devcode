@@ -222,3 +222,36 @@
 	position: fixed;
 	opacity: 0.2;
 }
+.todoItem {
+	margin: 20px 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: white;
+	box-shadow: 0px 6px 10px 0px #0000001a;
+	height: 80px;
+	font-size: 18px;
+	border-radius: 18px;
+	padding: 0 25px;
+	font-weight: 500;
+}
+.todoItem input[type='checkbox'] {
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	accent-color: #16abf8;
+}
+.todoItem div:nth-child(1) {
+	display: flex;
+	align-items: center;
+}
+
+.todoItem div:nth-child(1) p {
+	margin-right: 22px;
+}
+.todoItemEclipse {
+	margin: 0 25px;
+	height: 9px;
+	width: 9px;
+	border-radius: 50%;
+}

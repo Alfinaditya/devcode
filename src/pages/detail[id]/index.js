@@ -4,6 +4,7 @@ import Header from './Header';
 import TodoItems from './TodoItems';
 import styles from './detail.module.css';
 import AddTodoItemModal from './components/AddTodoItemModal';
+import EditTodoItemModal from './components/EditTodoItemModal';
 const Detail = () => {
 	return (
 		<DetailContextProvider>
@@ -11,6 +12,7 @@ const Detail = () => {
 				<Header />
 				<TodoItems />
 				<AddTodoItemModal />
+				<EditTodoItemModal />
 			</div>
 		</DetailContextProvider>
 	);

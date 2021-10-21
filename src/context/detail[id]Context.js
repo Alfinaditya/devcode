@@ -6,6 +6,7 @@ import {
 	CreateTodoItems,
 	RemoveTodoItems,
 	RefetchTodoItems,
+	UpdateTodoItem,
 } from '../api/todos';
 
 export const DetailContext = createContext(null);
@@ -27,16 +28,16 @@ export const DetailContextProvider = ({ children }) => {
 	const [params, setParams] = useState('');
 	const [sort, setSort] = useState('Ascending');
 	const [showAddTodoItemModal, setShowAddTodoItemModal] = useState(false);
-
-	function handleAdd(e) {
-		e.preventDefault();
+	const [showEditTodoItemModal, setShowEditTodoItemModal] = useState(false);
+	const [todoItemId, setTodoItemId] = useState('');
+	console.log(todoItemId);
+	function handleAdd() {
 		setIsLoading(true);
 		const body = JSON.stringify({
 			title,
 			priority: priorityValue,
 			activity_group_id: todo.id,
 		});
-		console.log(body);
 		CreateTodoItems(body).then(() => {
 			RefetchTodoItems(todo.id).then(refetchRes => {
 				console.log(refetchRes);
@@ -55,6 +56,17 @@ export const DetailContextProvider = ({ children }) => {
 			});
 		});
 	}
+	function handleUpdateTodoItem() {
+		setIsLoading(true);
+		UpdateTodoItem(params).then(() => {
+			RefetchTodoItems(todo.id).then(refetchRes => {
+				setRefetchTodoItems(refetchRes.data);
+				setShowConfirmModal(false);
+				setIsLoading(false);
+			});
+		});
+	}
+
 	const titleMemoized = useMemo(() => ({ title, setTitle }), [title, setTitle]);
 
 	const todoMemoized = useMemo(() => ({ todo }), [todo]);
@@ -84,17 +96,28 @@ export const DetailContextProvider = ({ children }) => {
 		[showConfirmModal, setShowConfirmModal]
 	);
 
-	const sortMemoized = useMemo(() => ({ sort, setSort }), [sort, setSort]);
-	const paramsMemoized = useMemo(
-		() => ({ params, setParams }),
-		[params, setParams]
-	);
-
 	const showAddTodoItemModalMemoized = useMemo(
 		() => ({ showAddTodoItemModal, setShowAddTodoItemModal }),
 		[showAddTodoItemModal, setShowAddTodoItemModal]
 	);
 
+	const showEditTodoItemModalMemoized = useMemo(
+		() => ({ showEditTodoItemModal, setShowEditTodoItemModal }),
+		[showEditTodoItemModal, setShowEditTodoItemModal]
+	);
+
+	const sortMemoized = useMemo(() => ({ sort, setSort }), [sort, setSort]);
+
+	const paramsMemoized = useMemo(
+		() => ({ params, setParams }),
+		[params, setParams]
+	);
+
+	const todoItemIdMemoized = useMemo(
+		() => ({ todoItemId, setTodoItemId }),
+		[todoItemId, setTodoItemId]
+	);
+	console.log(todoItemIdMemoized);
 	return (
 		<DetailContext.Provider
 			value={{
@@ -102,15 +125,18 @@ export const DetailContextProvider = ({ children }) => {
 				isLoadingMemoized,
 				sortMemoized,
 				paramsMemoized,
+				todoItemIdMemoized,
 				showAddTodoItemModalMemoized,
 				handleAdd,
 				handleDelete,
+				handleUpdateTodoItem,
 				showConfirmModalMemoized,
 				todoMemoized,
 				refetchTodoItems,
 				refetchTodoItemsMemoized,
 				watchTitleFieldMemoized,
 				priorityValueMemoized,
+				showEditTodoItemModalMemoized,
 			}}
 		>
 			{children}

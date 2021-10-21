@@ -1,15 +1,81 @@
 import React, { useContext, useState } from 'react';
 import Loading from '../../components/loading/Loading';
 import todoItemsEmpty from '../../assets/todoItemsEmpty.svg';
+import pencil from '../../assets/pencil.svg';
+import trash from '../../assets/trash.svg';
 import styles from './detail.module.css';
 import { DetailContext } from '../../context/detail[id]Context';
 import ConfirmModal from '../../components/confirmModal';
 
+function sortFunction(sort, a, b) {
+	switch (sort) {
+		case 'Ascending':
+			if (a.id > b.id) {
+				return -1;
+			}
+			if (a.id < b.id) {
+				return 1;
+			}
+			break;
+		case 'A-Z':
+			if (a.title < b.title) {
+				return -1;
+			}
+			if (a.title > b.title) {
+				return 1;
+			}
+			break;
+		case 'Z-A':
+			if (a.title > b.title) {
+				return -1;
+			}
+			if (a.title < b.title) {
+				return 1;
+			}
+			break;
+		case 'Descending':
+			if (a.id < b.id) {
+				return -1;
+			}
+			if (a.id > b.id) {
+				return 1;
+			}
+			break;
+		default:
+			break;
+	}
+}
+function renderPriorityColor(priority) {
+	let color;
+	switch (priority) {
+		case 'very-high':
+			color = '#ED4C5C';
+			break;
+
+		case 'high':
+			color = '#F8A541';
+			break;
+		case 'normal':
+			color = '#00A790';
+			break;
+
+		case 'low':
+			color = '#428BC1';
+			break;
+
+		case 'very-low':
+			color = '#428BC1';
+			break;
+
+		default:
+			break;
+	}
+	return color;
+}
 const TodoItems = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [confirmModalText, setConfirmModalText] = useState('');
 	const ctx = useContext(DetailContext);
-
 	return (
 		<div>
 			{ctx.todoMemoized.todo &&
@@ -82,18 +148,36 @@ const TodoItems = () => {
 					})
 					.map(todoItem => {
 						return (
-							<div key={todoItem.id}>
-								<p>{todoItem.priority}</p>
-								<p>{todoItem.title}</p>
-								<p
+							<div className={styles.todoItem} key={todoItem.id}>
+								<div>
+									<input type='checkbox' />
+									<div
+										className={styles.todoItemEclipse}
+										style={{
+											background: renderPriorityColor(todoItem.priority),
+										}}
+									></div>
+									<p>{todoItem.title}</p>
+									<img
+										onClick={() => {
+											ctx.showEditTodoItemModalMemoized.setShowEditTodoItemModal(
+												true
+											);
+											ctx.todoItemIdMemoized(todoItem.id);
+										}}
+										src={pencil}
+										alt='edit'
+									/>
+								</div>
+								<img
 									onClick={e => {
 										setShowConfirmModal(true);
 										setConfirmModalText(todoItem.title);
 										ctx.paramsMemoized.setParams(todoItem.id);
 									}}
-								>
-									DELETE
-								</p>
+									src={trash}
+									alt='Delete'
+								/>
 							</div>
 						);
 					})
@@ -101,42 +185,7 @@ const TodoItems = () => {
 				ctx.refetchTodoItemsMemoized.refetchTodoItems &&
 				ctx.refetchTodoItemsMemoized.refetchTodoItems
 					.sort((a, b) => {
-						switch (ctx.sortMemoized.sort) {
-							case 'Ascending':
-								if (a.id > b.id) {
-									return -1;
-								}
-								if (a.id < b.id) {
-									return 1;
-								}
-								break;
-							case 'A-Z':
-								if (a.title < b.title) {
-									return -1;
-								}
-								if (a.title > b.title) {
-									return 1;
-								}
-								break;
-							case 'Z-A':
-								if (a.title > b.title) {
-									return -1;
-								}
-								if (a.title < b.title) {
-									return 1;
-								}
-								break;
-							case 'Descending':
-								if (a.id < b.id) {
-									return -1;
-								}
-								if (a.id > b.id) {
-									return 1;
-								}
-								break;
-							default:
-								break;
-						}
+						sortFunction(ctx.sortMemoized.sort, a, b);
 					})
 					.filter(a => {
 						if (ctx.sortMemoized.sort === 'notCompleted') {
@@ -147,18 +196,36 @@ const TodoItems = () => {
 					})
 					.map(todoItem => {
 						return (
-							<div key={todoItem.id}>
-								<p>{todoItem.priority}</p>
-								<p>{todoItem.title}</p>
-								<p
+							<div className={styles.todoItem} key={todoItem.id}>
+								<div>
+									<input type='checkbox' />
+									<div
+										className={styles.todoItemEclipse}
+										style={{
+											background: renderPriorityColor(todoItem.priority),
+										}}
+									></div>
+									<p>{todoItem.title}</p>
+									<img
+										onClick={() => {
+											ctx.showEditTodoItemModalMemoized.setShowEditTodoItemModal(
+												true
+											);
+											ctx.todoItemIdMemoized.setTodoItem(todoItem.id);
+										}}
+										src={pencil}
+										alt='edit'
+									/>
+								</div>
+								<img
 									onClick={e => {
 										setShowConfirmModal(true);
 										setConfirmModalText(todoItem.title);
 										ctx.paramsMemoized.setParams(todoItem.id);
 									}}
-								>
-									DELETE
-								</p>
+									src={trash}
+									alt='Delete'
+								/>
 							</div>
 						);
 					})
