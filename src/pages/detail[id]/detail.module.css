@@ -1,7 +1,6 @@
 .detail {
 	max-width: 1000px;
 	margin: auto;
-	background-color: red;
 }
 .header {
 	display: flex;
@@ -22,7 +21,7 @@
 	cursor: pointer;
 }
 
-/* Dropdown */
+/* Sort Dropdown */
 .dropdown {
 	position: relative;
 }
@@ -47,11 +46,59 @@
 	font-size: 16px;
 	margin-left: 10px;
 }
+.priorityDropdownItem {
+	height: 52px;
+	width: 205px;
+	left: 30px;
+	border: 1px solid #e5e5e5;
+	background: white;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
 .dropdownItems div {
 	cursor: pointer;
 	height: 52px;
 	width: 235px;
 	border: 1px solid #e5e5e5;
+}
+
+/* Priority Dropdown */
+.priorityDropdown {
+	height: 52px;
+	width: 205px;
+	border-radius: 6px;
+	border: 1px solid #e5e5e5;
+	cursor: pointer;
+}
+.priorityDropdown div:nth-child(1) {
+	display: flex;
+	align-items: center;
+}
+.priorityDropdown img {
+	margin-right: 10px;
+}
+.priorityDropdownEclipse {
+	height: 14px;
+	width: 14px;
+	border-radius: 50%;
+	margin: 0 10px;
+}
+.buttonPriorityDropdown {
+	display: flex;
+	justify-content: space-around;
+	height: 100%;
+	align-items: center;
+}
+
+.buttonPriorityDropdown span {
+	font-size: 16px;
+	font-weight: 400;
+}
+.buttonPriorityDropdownArrow {
+	display: flex;
+	padding-right: 10px;
+	align-items: center;
 }
 
 /* Title Container */
@@ -103,6 +150,8 @@
 	margin: auto;
 	inset: 0;
 	border-radius: 12px;
+	display: flex;
+	flex-direction: column;
 	z-index: 1;
 }
 .modalAdd input:focus {
@@ -132,11 +181,13 @@
 .modalAddBody {
 	width: 759px;
 	margin: auto;
+	margin-top: 15px;
 }
 .modalAddBody label {
 	font-size: 12px;
 	font-weight: 600;
-	padding-bottom: 15px;
+	margin: 15px 0;
+	display: block;
 	width: 100%;
 }
 .modalAddBody input {
@@ -150,6 +201,18 @@
 	padding: 18px;
 	font-size: 16px;
 	font-weight: 400;
+}
+.modalAddFooter {
+	width: 100%;
+	height: 80px;
+	border-top: 1px solid #e5e5e5;
+	display: flex;
+	align-items: center;
+	z-index: -1;
+}
+.modalAddFooter button {
+	margin-right: 22px;
+	margin-left: auto;
 }
 .modalOverlay {
 	width: 100%;

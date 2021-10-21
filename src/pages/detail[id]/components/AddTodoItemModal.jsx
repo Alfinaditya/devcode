@@ -1,26 +1,22 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { DetailContext } from '../../../context/detail[id]Context';
 import styles from '../detail.module.css';
-import { PRIORITY_CONDITIONS } from '../text';
 import close from '../../../assets/close.svg';
+import PriorityDropdown from './PriorityDropdown';
 
 const AddTodoItemModal = () => {
 	const ctx = useContext(DetailContext);
-	const [showPriorityOptions, setshowPriorityOptions] = useState(false);
-	const [currentpriorityName, setCurrentPriorityName] = useState(
-		PRIORITY_CONDITIONS[0].name
-	);
-	const [currentpriorityValue, setCurrentPriorityValue] = useState(
-		PRIORITY_CONDITIONS[0].value
-	);
-	console.log();
+
 	return (
 		<>
 			{ctx.showAddTodoItemModalMemoized.showAddTodoItemModal && (
 				<>
 					<form
 						className={styles.modalAdd}
-						onSubmit={e => ctx.handleAddMemoized.handleAdd(e)}
+						onSubmit={e => {
+							ctx.handleAdd(e);
+							ctx.showAddTodoItemModalMemoized.setShowAddTodoItemModal(false);
+						}}
 					>
 						<div className={styles.modalAddHeader}>
 							<h1>Tambah List item</h1>
@@ -43,25 +39,17 @@ const AddTodoItemModal = () => {
 								placeholder='Tambahkan nama Activity'
 							/>
 							<label>PRIORITY</label>
-							<div onClick={() => setshowPriorityOptions(!showPriorityOptions)}>
-								{showPriorityOptions ? 'Pilih Priority' : currentpriorityName}
-							</div>
-							{showPriorityOptions &&
-								PRIORITY_CONDITIONS.map(PRIORITY_CONDITION => (
-									<div
-										key={PRIORITY_CONDITION.id}
-										id={PRIORITY_CONDITION.value}
-										onClick={e => {
-											setCurrentPriorityValue(e.currentTarget.id);
-											setCurrentPriorityName(e.currentTarget.textContent);
-											setshowPriorityOptions(false);
-										}}
-									>
-										{PRIORITY_CONDITION.name}
-									</div>
-								))}
+							<PriorityDropdown />
 						</div>
-						<button disabled={!ctx.titleMemoized.title}>Submit</button>
+						<div className={styles.modalAddFooter}>
+							<button
+								className='addButton'
+								style={{ width: '150px' }}
+								disabled={!ctx.titleMemoized.title}
+							>
+								Simpan
+							</button>
+						</div>
 					</form>
 				</>
 			)}

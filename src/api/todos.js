@@ -40,6 +40,7 @@ export const CreateTodo = () => {
 };
 
 export const CreateTodoItems = body => {
+	console.log(body);
 	return fetch('https://todo.api.devcode.gethired.id/todo-items', {
 		method: 'POST',
 		headers: {

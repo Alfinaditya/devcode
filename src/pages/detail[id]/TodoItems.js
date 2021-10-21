@@ -3,15 +3,18 @@ import Loading from '../../components/loading/Loading';
 import todoItemsEmpty from '../../assets/todoItemsEmpty.svg';
 import styles from './detail.module.css';
 import { DetailContext } from '../../context/detail[id]Context';
+import ConfirmModal from '../../components/confirmModal';
 
 const TodoItems = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
+	const [confirmModalText, setConfirmModalText] = useState('');
 	const ctx = useContext(DetailContext);
+
 	return (
 		<div>
 			{ctx.todoMemoized.todo &&
 				!ctx.todoMemoized.todo.todo_items.length &&
-				!ctx.todoMemoized.refetchTodoItems && (
+				!ctx.refetchTodoItemsMemoized.refetchTodoItems && (
 					<img
 						className={styles.todoItemsEmptyIcon}
 						src={todoItemsEmpty}
@@ -21,7 +24,13 @@ const TodoItems = () => {
 						}
 					/>
 				)}
-			{ctx.isLoading ? (
+			<ConfirmModal
+				open={showConfirmModal}
+				setOpen={setShowConfirmModal}
+				title={confirmModalText}
+				handleDelete={ctx.handleDelete}
+			/>
+			{ctx.isLoadingMemoized.isLoading ? (
 				<Loading />
 			) : !ctx.refetchTodoItemsMemoized.refetchTodoItems ? (
 				ctx.todoMemoized.todo &&
@@ -79,6 +88,7 @@ const TodoItems = () => {
 								<p
 									onClick={e => {
 										setShowConfirmModal(true);
+										setConfirmModalText(todoItem.title);
 										ctx.paramsMemoized.setParams(todoItem.id);
 									}}
 								>
@@ -143,6 +153,7 @@ const TodoItems = () => {
 								<p
 									onClick={e => {
 										setShowConfirmModal(true);
+										setConfirmModalText(todoItem.title);
 										ctx.paramsMemoized.setParams(todoItem.id);
 									}}
 								>

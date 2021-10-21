@@ -9,26 +9,31 @@ export const PRIORITY_CONDITIONS = [
 		id: 1,
 		name: 'Very High',
 		value: 'very-high',
+		priorityColor: '#ED4C5C',
 	},
 	{
 		id: 2,
 		name: 'High',
 		value: 'high',
+		priorityColor: '#F8A541',
 	},
 	{
 		id: 3,
 		name: 'Medium',
 		value: 'normal',
+		priorityColor: '#00A790',
 	},
 	{
 		id: 4,
 		name: 'Low',
 		value: 'low',
+		priorityColor: '#428BC1',
 	},
 	{
 		id: 5,
 		name: 'Very Low',
 		value: 'very-low',
+		priorityColor: '#8942C1',
 	},
 ];
 export const SORT_TYPES = [

@@ -4,7 +4,6 @@ import { DetailContext } from '../../../context/detail[id]Context';
 
 const AddTodoItem = () => {
 	const { showAddTodoItemModalMemoized: ctx } = useContext(DetailContext);
-	console.log(ctx);
 	return (
 		<div>
 			<button

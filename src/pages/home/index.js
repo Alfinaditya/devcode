@@ -7,10 +7,10 @@ import Loading from '../../components/loading/Loading';
 import plusSvg from '../../assets/plus.svg';
 import todosEmptySvg from '../../assets/todosEmpty.svg';
 import trashSvg from '../../assets/trash.svg';
-import modalDeleteIcon from '../../assets/modalDeleteIcon.svg';
 import modalInformationIcon from '../../assets/modalInformationIcon.svg';
 import Animated from 'react-mount-animation';
 import UseScrollBlock from '../../hooks/UseScrollBlock';
+import ConfirmModal from '../../components/confirmModal';
 
 const Home = () => {
 	const history = useHistory();
@@ -85,54 +85,13 @@ const Home = () => {
 			></Animated.div>
 
 			{/* Confirm Modal */}
-			<Animated.div
-				show={initConfirmModal}
-				onClick={() => setInitConfirmModal(!initConfirmModal)}
-				mountAnim={`
-					 0% {opacity:0}
-					 100% {opacity:0.2}
-					 `}
-				unmountAnim={`
-					 0% {opacity:0.2}
-					 100% {opacity:0}
-					`}
-				className={styles.modalOverlay}
+			<ConfirmModal
+				open={initConfirmModal}
+				setOpen={setInitConfirmModal}
+				handleDelete={handleDelete}
+				title={deleteTitle}
 			/>
-			<Animated.div
-				show={initConfirmModal}
-				mountAnim={`
-					0% {inset: 200% 0 0 0 }
-					100% {inset: 0}
-					 `}
-				unmountAnim={`
-					0% {inset: 0}
-					100% {inset: 200% 0 0 0 }
-					`}
-				className={styles.modal}
-			>
-				<img src={modalDeleteIcon} alt='Icon' />
-				<div className={styles.modalText}>
-					<span>Apakah anda yakin menghapus activity </span>
-					<span>“{deleteTitle}”?</span>
-				</div>
-				<div>
-					<button
-						className={styles.cancelButton}
-						onClick={() => setInitConfirmModal(false)}
-					>
-						Batal
-					</button>
-					<button
-						onClick={() => {
-							handleDelete();
-						}}
-						className={styles.deleteButton}
-					>
-						Hapus
-					</button>
-				</div>
-			</Animated.div>
-
+			{/* Confirm Modal */}
 			<div className={styles.home}>
 				<div className={styles.header}>
 					<h1 className={styles.title}>Activity</h1>
