@@ -40,7 +40,6 @@ export const CreateTodo = () => {
 };
 
 export const CreateTodoItems = body => {
-	console.log(body);
 	return fetch('https://todo.api.devcode.gethired.id/todo-items', {
 		method: 'POST',
 		headers: {
@@ -108,45 +107,6 @@ export const RemoveTodoItems = params => {
 	}).then(x => {
 		return x.json();
 	});
-};
-// export const GetTodoItem = params => {
-// 	return fetch(``, {
-// 		method: 'GET',
-// 		headers: {
-// 			'Content-Type': 'application/json',
-// 		},
-// 	}).then(x => {
-// 		return x.json();
-// 	});
-// };
-export const GetTodoItem = params => {
-	const [isLoading, setIsLoading] = useState(false);
-	const [isError, setIsError] = useState(false);
-	const [data, setData] = useState('');
-	useEffect(() => {
-		setIsLoading(true);
-		fetch(`https://todo.api.devcode.gethired.id/todo-items/${params}`, {
-			method: 'GET',
-		})
-			.then(x => {
-				return x.json();
-			})
-			.then(res => {
-				setData(res);
-				setIsLoading(false);
-				setIsError(false);
-			})
-			.catch(() => {
-				setIsError(true);
-			});
-	}, []);
-	return {
-		data,
-		setData,
-		isLoading,
-		isError,
-		setIsLoading,
-	};
 };
 export const UpdateTodoItem = (params, body) => {
 	return fetch(`https://todo.api.devcode.gethired.id/todo-items/${params}`, {

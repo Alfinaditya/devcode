@@ -1,9 +1,7 @@
 import { useState, createContext, useMemo } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { PRIORITY_CONDITIONS } from '../pages/detail[id]/text';
+import { useParams } from 'react-router-dom';
 import {
 	DetailTodo,
-	CreateTodoItems,
 	RemoveTodoItems,
 	RefetchTodoItems,
 	UpdateTodoItem,
@@ -19,62 +17,23 @@ export const DetailContextProvider = ({ children }) => {
 		isLoading,
 		setIsLoading,
 	} = DetailTodo(id);
-	const [title, setTitle] = useState('');
-	const [priorityValue, setPriorityValue] = useState(
-		PRIORITY_CONDITIONS[0].value
-	);
 	const [refetchTodoItems, setRefetchTodoItems] = useState(false);
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [params, setParams] = useState('');
 	const [sort, setSort] = useState('Ascending');
-	const [showAddTodoItemModal, setShowAddTodoItemModal] = useState(false);
-	const [showEditTodoItemModal, setShowEditTodoItemModal] = useState(false);
-	const [todoItemId, setTodoItemId] = useState('');
-	console.log(todoItemId);
-	function handleAdd() {
-		setIsLoading(true);
-		const body = JSON.stringify({
-			title,
-			priority: priorityValue,
-			activity_group_id: todo.id,
-		});
-		CreateTodoItems(body).then(() => {
-			RefetchTodoItems(todo.id).then(refetchRes => {
-				console.log(refetchRes);
-				setRefetchTodoItems(refetchRes.data);
-				setIsLoading(false);
-			});
-		});
-	}
-	function handleDelete() {
-		setIsLoading(true);
-		RemoveTodoItems(params).then(() => {
-			RefetchTodoItems(todo.id).then(refetchRes => {
-				setRefetchTodoItems(refetchRes.data);
-				setShowConfirmModal(false);
-				setIsLoading(false);
-			});
-		});
-	}
-	function handleUpdateTodoItem() {
-		setIsLoading(true);
-		UpdateTodoItem(params).then(() => {
-			RefetchTodoItems(todo.id).then(refetchRes => {
-				setRefetchTodoItems(refetchRes.data);
-				setShowConfirmModal(false);
-				setIsLoading(false);
-			});
-		});
-	}
 
-	const titleMemoized = useMemo(() => ({ title, setTitle }), [title, setTitle]);
+	// function handleUpdateTodoItem() {
+	// 	setIsLoading(true);
+	// 	UpdateTodoItem(params).then(() => {
+	// 		RefetchTodoItems(todo.id).then(refetchRes => {
+	// 			setRefetchTodoItems(refetchRes.data);
+	// 			setShowConfirmModal(false);
+	// 			setIsLoading(false);
+	// 		});
+	// 	});
+	// }
 
 	const todoMemoized = useMemo(() => ({ todo }), [todo]);
-
-	const priorityValueMemoized = useMemo(
-		() => ({ priorityValue, setPriorityValue }),
-		[priorityValue, setPriorityValue]
-	);
 
 	const isLoadingMemoized = useMemo(
 		() => ({ isLoading, setIsLoading }),
@@ -96,16 +55,6 @@ export const DetailContextProvider = ({ children }) => {
 		[showConfirmModal, setShowConfirmModal]
 	);
 
-	const showAddTodoItemModalMemoized = useMemo(
-		() => ({ showAddTodoItemModal, setShowAddTodoItemModal }),
-		[showAddTodoItemModal, setShowAddTodoItemModal]
-	);
-
-	const showEditTodoItemModalMemoized = useMemo(
-		() => ({ showEditTodoItemModal, setShowEditTodoItemModal }),
-		[showEditTodoItemModal, setShowEditTodoItemModal]
-	);
-
 	const sortMemoized = useMemo(() => ({ sort, setSort }), [sort, setSort]);
 
 	const paramsMemoized = useMemo(
@@ -113,30 +62,16 @@ export const DetailContextProvider = ({ children }) => {
 		[params, setParams]
 	);
 
-	const todoItemIdMemoized = useMemo(
-		() => ({ todoItemId, setTodoItemId }),
-		[todoItemId, setTodoItemId]
-	);
-	console.log(todoItemIdMemoized);
 	return (
 		<DetailContext.Provider
 			value={{
-				titleMemoized,
 				isLoadingMemoized,
 				sortMemoized,
 				paramsMemoized,
-				todoItemIdMemoized,
-				showAddTodoItemModalMemoized,
-				handleAdd,
-				handleDelete,
-				handleUpdateTodoItem,
 				showConfirmModalMemoized,
 				todoMemoized,
-				refetchTodoItems,
 				refetchTodoItemsMemoized,
 				watchTitleFieldMemoized,
-				priorityValueMemoized,
-				showEditTodoItemModalMemoized,
 			}}
 		>
 			{children}

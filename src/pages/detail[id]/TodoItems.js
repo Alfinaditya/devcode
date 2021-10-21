@@ -6,76 +6,27 @@ import trash from '../../assets/trash.svg';
 import styles from './detail.module.css';
 import { DetailContext } from '../../context/detail[id]Context';
 import ConfirmModal from '../../components/confirmModal';
+import EditTodoItemModal from './components/EditTodoItemModal';
+import { renderPriorityColor } from '../../helpers';
+import { RemoveTodoItems, RefetchTodoItems } from '../../api/todos';
 
-function sortFunction(sort, a, b) {
-	switch (sort) {
-		case 'Ascending':
-			if (a.id > b.id) {
-				return -1;
-			}
-			if (a.id < b.id) {
-				return 1;
-			}
-			break;
-		case 'A-Z':
-			if (a.title < b.title) {
-				return -1;
-			}
-			if (a.title > b.title) {
-				return 1;
-			}
-			break;
-		case 'Z-A':
-			if (a.title > b.title) {
-				return -1;
-			}
-			if (a.title < b.title) {
-				return 1;
-			}
-			break;
-		case 'Descending':
-			if (a.id < b.id) {
-				return -1;
-			}
-			if (a.id > b.id) {
-				return 1;
-			}
-			break;
-		default:
-			break;
-	}
-}
-function renderPriorityColor(priority) {
-	let color;
-	switch (priority) {
-		case 'very-high':
-			color = '#ED4C5C';
-			break;
-
-		case 'high':
-			color = '#F8A541';
-			break;
-		case 'normal':
-			color = '#00A790';
-			break;
-
-		case 'low':
-			color = '#428BC1';
-			break;
-
-		case 'very-low':
-			color = '#428BC1';
-			break;
-
-		default:
-			break;
-	}
-	return color;
-}
 const TodoItems = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [confirmModalText, setConfirmModalText] = useState('');
+	const [open, setOpen] = useState(false);
 	const ctx = useContext(DetailContext);
+
+	function handleDelete() {
+		ctx.isLoadingMemoized.setIsLoading(true);
+		RemoveTodoItems(ctx.paramsMemoized.params).then(() => {
+			RefetchTodoItems(ctx.todoMemoized.todo.id).then(refetchRes => {
+				ctx.refetchTodoItemsMemoized.setRefetchTodoItems(refetchRes.data);
+				setShowConfirmModal(false);
+				ctx.isLoadingMemoized.setIsLoading(false);
+			});
+		});
+	}
+
 	return (
 		<div>
 			{ctx.todoMemoized.todo &&
@@ -85,16 +36,13 @@ const TodoItems = () => {
 						className={styles.todoItemsEmptyIcon}
 						src={todoItemsEmpty}
 						alt='Empty todo items'
-						onClick={() =>
-							ctx.showAddTodoItemModalMemoized.setShowAddTodoItemModal(true)
-						}
 					/>
 				)}
 			<ConfirmModal
 				open={showConfirmModal}
 				setOpen={setShowConfirmModal}
 				title={confirmModalText}
-				handleDelete={ctx.handleDelete}
+				handleDelete={handleDelete}
 			/>
 			{ctx.isLoadingMemoized.isLoading ? (
 				<Loading />
@@ -160,23 +108,27 @@ const TodoItems = () => {
 									<p>{todoItem.title}</p>
 									<img
 										onClick={() => {
-											ctx.showEditTodoItemModalMemoized.setShowEditTodoItemModal(
-												true
-											);
-											ctx.todoItemIdMemoized(todoItem.id);
+											setOpen(true);
 										}}
 										src={pencil}
 										alt='edit'
 									/>
 								</div>
 								<img
-									onClick={e => {
+									onClick={() => {
 										setShowConfirmModal(true);
 										setConfirmModalText(todoItem.title);
 										ctx.paramsMemoized.setParams(todoItem.id);
 									}}
 									src={trash}
 									alt='Delete'
+								/>
+								<EditTodoItemModal
+									id={todoItem.id}
+									title={todoItem.title}
+									priority={todoItem.priority}
+									open={open}
+									setOpen={setOpen}
 								/>
 							</div>
 						);
@@ -185,7 +137,42 @@ const TodoItems = () => {
 				ctx.refetchTodoItemsMemoized.refetchTodoItems &&
 				ctx.refetchTodoItemsMemoized.refetchTodoItems
 					.sort((a, b) => {
-						sortFunction(ctx.sortMemoized.sort, a, b);
+						switch (ctx.sortMemoized.sort) {
+							case 'Ascending':
+								if (a.id > b.id) {
+									return -1;
+								}
+								if (a.id < b.id) {
+									return 1;
+								}
+								break;
+							case 'A-Z':
+								if (a.title < b.title) {
+									return -1;
+								}
+								if (a.title > b.title) {
+									return 1;
+								}
+								break;
+							case 'Z-A':
+								if (a.title > b.title) {
+									return -1;
+								}
+								if (a.title < b.title) {
+									return 1;
+								}
+								break;
+							case 'Descending':
+								if (a.id < b.id) {
+									return -1;
+								}
+								if (a.id > b.id) {
+									return 1;
+								}
+								break;
+							default:
+								break;
+						}
 					})
 					.filter(a => {
 						if (ctx.sortMemoized.sort === 'notCompleted') {
@@ -208,23 +195,27 @@ const TodoItems = () => {
 									<p>{todoItem.title}</p>
 									<img
 										onClick={() => {
-											ctx.showEditTodoItemModalMemoized.setShowEditTodoItemModal(
-												true
-											);
-											ctx.todoItemIdMemoized.setTodoItem(todoItem.id);
+											setOpen(true);
 										}}
 										src={pencil}
 										alt='edit'
 									/>
 								</div>
 								<img
-									onClick={e => {
+									onClick={() => {
 										setShowConfirmModal(true);
 										setConfirmModalText(todoItem.title);
 										ctx.paramsMemoized.setParams(todoItem.id);
 									}}
 									src={trash}
 									alt='Delete'
+								/>
+								<EditTodoItemModal
+									id={todoItem.id}
+									title={todoItem.title}
+									priority={todoItem.priority}
+									open={open}
+									setOpen={setOpen}
 								/>
 							</div>
 						);

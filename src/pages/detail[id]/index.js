@@ -3,7 +3,6 @@ import { DetailContextProvider } from '../../context/detail[id]Context';
 import Header from './Header';
 import TodoItems from './TodoItems';
 import styles from './detail.module.css';
-import AddTodoItemModal from './components/AddTodoItemModal';
 import EditTodoItemModal from './components/EditTodoItemModal';
 const Detail = () => {
 	return (
@@ -11,7 +10,6 @@ const Detail = () => {
 			<div className={styles.detail}>
 				<Header />
 				<TodoItems />
-				<AddTodoItemModal />
 				<EditTodoItemModal />
 			</div>
 		</DetailContextProvider>

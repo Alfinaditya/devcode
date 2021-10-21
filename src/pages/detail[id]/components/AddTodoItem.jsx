@@ -1,18 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useState } from 'react';
 import plusSvg from '../../../assets/plus.svg';
-import { DetailContext } from '../../../context/detail[id]Context';
+import AddTodoItemModal from './AddTodoItemModal';
 
 const AddTodoItem = () => {
-	const { showAddTodoItemModalMemoized: ctx } = useContext(DetailContext);
+	const [open, setOpen] = useState(false);
 	return (
 		<div>
-			<button
-				className='addButton'
-				onClick={() => ctx.setShowAddTodoItemModal(true)}
-			>
+			<button className='addButton' onClick={() => setOpen(true)}>
 				<img src={plusSvg} alt='Tambah' />
 				<span className='addButtonText'>Tambah</span>
 			</button>
+			<AddTodoItemModal open={open} setOpen={setOpen} />
 		</div>
 	);
 };
