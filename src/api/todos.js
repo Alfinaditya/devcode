@@ -113,6 +113,19 @@ export const RemoveTodoItems = async params => {
 	);
 	return await response.json();
 };
+export const UpdateActiveTodoItem = async (params, body) => {
+	const response = await fetch(
+		`https://todo.api.devcode.gethired.id/todo-items/${params}`,
+		{
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body,
+		}
+	);
+	return response.json();
+};
 export const UpdateTodoItem = async (params, body) => {
 	console.log(body);
 	const response = await fetch(
@@ -127,6 +140,7 @@ export const UpdateTodoItem = async (params, body) => {
 	);
 	return response.json();
 };
+// https://todo.api.devcode.gethired.id/todo-items/2942
 export const UpdateTodoTitle = (params, value) => {
 	return fetch(
 		`https://todo.api.devcode.gethired.id/activity-groups/${params}`,

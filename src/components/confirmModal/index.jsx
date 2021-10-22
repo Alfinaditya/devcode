@@ -3,7 +3,6 @@ import Animated from 'react-mount-animation';
 import modalDeleteIcon from '../../assets/modalDeleteIcon.svg';
 import styles from './confirmmodal.module.css';
 const ConfirmModal = ({ open, setOpen, handleDelete, title }) => {
-	console.log(open);
 	return (
 		<>
 			<Animated.div

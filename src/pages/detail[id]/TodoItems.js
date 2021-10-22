@@ -8,9 +8,50 @@ import { DetailContext } from '../../context/detail[id]Context';
 import ConfirmModal from '../../components/confirmModal';
 import EditTodoItemModal from './components/EditTodoItemModal';
 import { renderPriorityColor } from '../../helpers';
-import { RemoveTodoItems, RefetchTodoItems } from '../../api/todos';
+import {
+	RemoveTodoItems,
+	RefetchTodoItems,
+	UpdateActiveTodoItem,
+} from '../../api/todos';
 import AddTodoItemModal from '../detail[id]/components/AddTodoItemModal';
-
+function sort(sort, a, b) {
+	switch (sort) {
+		case 'Ascending':
+			if (a.id > b.id) {
+				return -1;
+			}
+			if (a.id < b.id) {
+				return 1;
+			}
+			break;
+		case 'A-Z':
+			if (a.title < b.title) {
+				return -1;
+			}
+			if (a.title > b.title) {
+				return 1;
+			}
+			break;
+		case 'Z-A':
+			if (a.title > b.title) {
+				return -1;
+			}
+			if (a.title < b.title) {
+				return 1;
+			}
+			break;
+		case 'Descending':
+			if (a.id < b.id) {
+				return -1;
+			}
+			if (a.id > b.id) {
+				return 1;
+			}
+			break;
+		default:
+			break;
+	}
+}
 const TodoItems = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [confirmModalText, setConfirmModalText] = useState('');
@@ -20,13 +61,18 @@ const TodoItems = () => {
 
 	async function handleDelete() {
 		ctx.isLoadingMemoized.setIsLoading(true);
-		const response = await RemoveTodoItems(ctx.paramsMemoized.params);
+		const response = await RemoveTodoItems(ctx.todoMemoized.todo.id);
 		const refetchRes = await RefetchTodoItems(ctx.todoMemoized.todo.id);
 		ctx.refetchTodoItemsMemoized.setRefetchTodoItems(refetchRes.data);
 		setShowConfirmModal(false);
 		ctx.isLoadingMemoized.setIsLoading(false);
 	}
-
+	async function handleActive(params, checkedValue) {
+		const body = JSON.stringify({
+			is_active: checkedValue ? 0 : 1,
+		});
+		const response = await UpdateActiveTodoItem(params, body);
+	}
 	return (
 		<div>
 			{ctx.todoMemoized.todo &&
@@ -55,42 +101,7 @@ const TodoItems = () => {
 				ctx.todoMemoized.todo &&
 				ctx.todoMemoized.todo.todo_items
 					.sort((a, b) => {
-						switch (ctx.sortMemoized.sort) {
-							case 'Ascending':
-								if (a.id > b.id) {
-									return -1;
-								}
-								if (a.id < b.id) {
-									return 1;
-								}
-								break;
-							case 'A-Z':
-								if (a.title < b.title) {
-									return -1;
-								}
-								if (a.title > b.title) {
-									return 1;
-								}
-								break;
-							case 'Z-A':
-								if (a.title > b.title) {
-									return -1;
-								}
-								if (a.title < b.title) {
-									return 1;
-								}
-								break;
-							case 'Descending':
-								if (a.id < b.id) {
-									return -1;
-								}
-								if (a.id > b.id) {
-									return 1;
-								}
-								break;
-							default:
-								break;
-						}
+						return sort(ctx.sortMemoized.sort, a, b);
 					})
 					.filter(a => {
 						if (ctx.sortMemoized.sort === 'notCompleted') {
@@ -103,7 +114,13 @@ const TodoItems = () => {
 						return (
 							<div className={styles.todoItem} key={todoItem.id}>
 								<div>
-									<input type='checkbox' />
+									<input
+										defaultChecked={todoItem.is_active === 0 ? true : false}
+										onChange={e => {
+											handleActive(todoItem.id, e.target.checked);
+										}}
+										type='checkbox'
+									/>
 									<div
 										className={styles.todoItemEclipse}
 										style={{
@@ -142,42 +159,7 @@ const TodoItems = () => {
 				ctx.refetchTodoItemsMemoized.refetchTodoItems &&
 				ctx.refetchTodoItemsMemoized.refetchTodoItems
 					.sort((a, b) => {
-						switch (ctx.sortMemoized.sort) {
-							case 'Ascending':
-								if (a.id > b.id) {
-									return -1;
-								}
-								if (a.id < b.id) {
-									return 1;
-								}
-								break;
-							case 'A-Z':
-								if (a.title < b.title) {
-									return -1;
-								}
-								if (a.title > b.title) {
-									return 1;
-								}
-								break;
-							case 'Z-A':
-								if (a.title > b.title) {
-									return -1;
-								}
-								if (a.title < b.title) {
-									return 1;
-								}
-								break;
-							case 'Descending':
-								if (a.id < b.id) {
-									return -1;
-								}
-								if (a.id > b.id) {
-									return 1;
-								}
-								break;
-							default:
-								break;
-						}
+						return sort(ctx.sortMemoized.sort, a, b);
 					})
 					.filter(a => {
 						if (ctx.sortMemoized.sort === 'notCompleted') {
@@ -190,7 +172,13 @@ const TodoItems = () => {
 						return (
 							<div className={styles.todoItem} key={todoItem.id}>
 								<div>
-									<input type='checkbox' />
+									<input
+										type='checkbox'
+										defaultChecked={todoItem.is_active === 0 ? true : false}
+										onChange={e => {
+											handleActive(todoItem.id, e.target.checked);
+										}}
+									/>
 									<div
 										className={styles.todoItemEclipse}
 										style={{

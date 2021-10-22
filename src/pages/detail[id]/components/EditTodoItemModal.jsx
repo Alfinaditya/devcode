@@ -31,6 +31,7 @@ const EditTodoItemModal = ({
 	const [title, setTitle] = useState(currentTitle);
 	const [showPriorityOptions, setShowPriorityOptions] = useState(false);
 	const [priorityValue, setPriorityValue] = useState(currentPriorityValue);
+
 	async function handleEdit() {
 		const body = JSON.stringify({
 			title,
