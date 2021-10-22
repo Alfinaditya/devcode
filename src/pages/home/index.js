@@ -26,27 +26,22 @@ const Home = () => {
 	const [deleteTitle, setDeleteTitle] = useState('');
 	const [successAlert, setSuccessAlert] = useState(false);
 
-	function handleAdd() {
+	async function handleAdd() {
 		setIsLoading(true);
-		CreateTodo().then(() => {
-			Refetch().then(refetchRes => {
-				setTodos(refetchRes.data);
-				setIsLoading(false);
-				setIsLoading(false);
-			});
-		});
+		const res = await CreateTodo();
+		const refetchRes = await Refetch();
+		setTodos(refetchRes.data);
+		setIsLoading(false);
 	}
 
-	function handleDelete() {
+	async function handleDelete() {
 		setIsLoading(true);
-		RemoveTodo(params).then(() => {
-			Refetch().then(refetchRes => {
-				setTodos(refetchRes.data);
-				setInitConfirmModal(false);
-				setIsLoading(false);
-				setSuccessAlert(true);
-			});
-		});
+		const response = await RemoveTodo(params);
+		const refetchRes = await Refetch();
+		setTodos(refetchRes.data);
+		setInitConfirmModal(false);
+		setIsLoading(false);
+		setSuccessAlert(true);
 	}
 	{
 		initConfirmModal ? blockScroll() : allowScroll();
@@ -136,7 +131,9 @@ const Home = () => {
 									);
 								})}
 						</div>
-						{!todos.length && <img src={todosEmptySvg} alt='No todos' />}
+						{!todos.length && (
+							<img src={todosEmptySvg} onClick={handleDelete} alt='No todos' />
+						)}
 					</>
 				)}
 			</div>

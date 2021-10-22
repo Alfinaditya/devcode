@@ -44,7 +44,7 @@ export function renderPriorityColor(priority) {
 			break;
 
 		case 'very-low':
-			color = '#428BC1';
+			color = '#8942C1';
 			break;
 
 		default:

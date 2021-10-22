@@ -1,48 +1,64 @@
 import React, { useContext, useState } from 'react';
 import { DetailContext } from '../../../context/detail[id]Context';
 import styles from '../detail.module.css';
-import close from '../../../assets/close.svg';
 import check from '../../../assets/check.svg';
 import dropdownArrow from '../../../assets/dropdownArrow.svg';
+import close from '../../../assets/close.svg';
 import { PRIORITY_CONDITIONS } from '../text';
 import { CreateTodoItems, RefetchTodoItems } from '../../../api/todos';
+import Animated from 'react-mount-animation';
 
 const AddTodoItemModal = ({ open, setOpen }) => {
 	const ctx = useContext(DetailContext);
-	const [showPriorityOptions, setshowPriorityOptions] = useState(false);
+	const [showPriorityOptions, setShowPriorityOptions] = useState(false);
 	const [title, setTitle] = useState('');
 	const [currentpriorityName, setCurrentPriorityName] = useState(
 		PRIORITY_CONDITIONS[0].name
 	);
-	const [currentPriorityColor, setcurrentPriorityColor] = useState(
+	const [currentPriorityColor, setCurrentPriorityColor] = useState(
 		PRIORITY_CONDITIONS[0].priorityColor
 	);
 	const [priorityValue, setPriorityValue] = useState(
 		PRIORITY_CONDITIONS[0].value
 	);
-	function handleAdd() {
+
+	async function handleAdd(e) {
+		e.preventDefault();
 		ctx.isLoadingMemoized.setIsLoading(true);
 		const body = JSON.stringify({
 			title,
 			priority: priorityValue,
 			activity_group_id: ctx.todoMemoized.todo.id,
 		});
-		CreateTodoItems(body).then(() => {
-			RefetchTodoItems(ctx.todoMemoized.todo.id).then(refetchRes => {
-				ctx.refetchTodoItemsMemoized.setRefetchTodoItems(refetchRes.data);
-				ctx.isLoadingMemoized.setIsLoading(false);
-			});
-		});
+		console.log(body);
+		const response = await CreateTodoItems(body);
+		const refetchRes = await RefetchTodoItems(ctx.todoMemoized.todo.id);
+		ctx.refetchTodoItemsMemoized.setRefetchTodoItems(refetchRes.data);
+		ctx.isLoadingMemoized.setIsLoading(false);
 	}
 	return (
 		<>
 			{open && (
 				<>
+					<div
+						// show={open}
+						onClick={() => setOpen(false)}
+						className={styles.modalOverlay}
+					></div>
 					<form
 						className={styles.modalAdd}
-						onSubmit={() => {
-							handleAdd();
+						// show={open}
+						// mountAnim={`
+						// 	0% {inset: 200% 0 0 0 }
+						// 	100% {inset: 0}
+						// 	 `}
+						// unmountAnim={`
+						// 	0% {inset: 0}
+						// 	100% {inset: 200% 0 0 0 }
+						// 	`}
+						onSubmit={e => {
 							setOpen(false);
+							handleAdd(e);
 						}}
 					>
 						<div className={styles.modalAddHeader}>
@@ -66,7 +82,7 @@ const AddTodoItemModal = ({ open, setOpen }) => {
 											? { background: '#F4F4F4' }
 											: { background: 'white' }
 									}
-									onClick={() => setshowPriorityOptions(!showPriorityOptions)}
+									onClick={() => setShowPriorityOptions(!showPriorityOptions)}
 								>
 									<div
 										style={
@@ -93,11 +109,11 @@ const AddTodoItemModal = ({ open, setOpen }) => {
 											id={PRIORITY_CONDITION.value}
 											onClick={() => {
 												setPriorityValue(PRIORITY_CONDITION.value);
-												setcurrentPriorityColor(
+												setCurrentPriorityColor(
 													PRIORITY_CONDITION.priorityColor
 												);
 												setCurrentPriorityName(PRIORITY_CONDITION.name);
-												setshowPriorityOptions(false);
+												setShowPriorityOptions(false);
 											}}
 										>
 											<div>

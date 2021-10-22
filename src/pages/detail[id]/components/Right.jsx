@@ -1,14 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import styles from '../detail.module.css';
-import AddTodoItem from './AddTodoItem';
 import Sort from './Sort';
+import plus from '../../../assets/plus.svg';
+import AddTodoItemModal from './AddTodoItemModal';
 
 const Right = () => {
+	const [open, setOpen] = useState(false);
 	return (
 		<>
 			<div className={styles.right}>
 				<Sort />
-				<AddTodoItem />
+				<button className='addButton' onClick={() => setOpen(true)}>
+					<img src={plus} alt='Tambah' />
+					<span className='addButtonText'>Tambah</span>
+				</button>
+				<AddTodoItemModal open={open} setOpen={setOpen} />
 			</div>
 		</>
 	);

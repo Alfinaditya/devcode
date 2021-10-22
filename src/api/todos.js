@@ -25,30 +25,34 @@ export const GetTodos = () => {
 	return { data, setData, isLoading, setIsLoading, isError, setIsError };
 };
 
-export const CreateTodo = () => {
-	return fetch(`https://todo.api.devcode.gethired.id/activity-groups`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			title: 'New Activity',
-		}),
-	}).then(x => {
-		return x.json();
-	});
+export const CreateTodo = async () => {
+	const response = await fetch(
+		`https://todo.api.devcode.gethired.id/activity-groups`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				title: 'New Activity',
+			}),
+		}
+	);
+	return await response.json();
 };
 
-export const CreateTodoItems = body => {
-	return fetch('https://todo.api.devcode.gethired.id/todo-items', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body,
-	}).then(x => {
-		return x.json();
-	});
+export const CreateTodoItems = async body => {
+	const response = await fetch(
+		'https://todo.api.devcode.gethired.id/todo-items',
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body,
+		}
+	);
+	return await response.json();
 };
 export const DetailTodo = params => {
 	const [watchTitleField, setWatchTitleField] = useState('');
@@ -84,8 +88,8 @@ export const DetailTodo = params => {
 	};
 };
 
-export const RemoveTodo = params => {
-	return fetch(
+export const RemoveTodo = async params => {
+	const response = await fetch(
 		`https://todo.api.devcode.gethired.id/activity-groups/${params}`,
 		{
 			method: 'DELETE',
@@ -93,31 +97,35 @@ export const RemoveTodo = params => {
 				'Content-Type': 'application/json',
 			},
 		}
-	).then(x => {
-		return x.json();
-	});
+	);
+	return await response.json();
 };
 
-export const RemoveTodoItems = params => {
-	return fetch(`https://todo.api.devcode.gethired.id/todo-items/${params}`, {
-		method: 'DELETE',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-	}).then(x => {
-		return x.json();
-	});
+export const RemoveTodoItems = async params => {
+	const response = await fetch(
+		`https://todo.api.devcode.gethired.id/todo-items/${params}`,
+		{
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		}
+	);
+	return await response.json();
 };
-export const UpdateTodoItem = (params, body) => {
-	return fetch(`https://todo.api.devcode.gethired.id/todo-items/${params}`, {
-		method: 'PATCH',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body,
-	}).then(x => {
-		return x.json();
-	});
+export const UpdateTodoItem = async (params, body) => {
+	console.log(body);
+	const response = await fetch(
+		`https://todo.api.devcode.gethired.id/todo-items/${params}`,
+		{
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body,
+		}
+	);
+	return response.json();
 };
 export const UpdateTodoTitle = (params, value) => {
 	return fetch(
@@ -136,21 +144,22 @@ export const UpdateTodoTitle = (params, value) => {
 	});
 };
 
-export const Refetch = () => {
-	return fetch('https://todo.api.devcode.gethired.id/activity-groups', {
-		method: 'GET',
-	}).then(x => {
-		return x.json();
-	});
+export const Refetch = async () => {
+	const response = await fetch(
+		'https://todo.api.devcode.gethired.id/activity-groups',
+		{
+			method: 'GET',
+		}
+	);
+	return response.json();
 };
 
-export const RefetchTodoItems = params => {
-	return fetch(
+export const RefetchTodoItems = async params => {
+	const response = await fetch(
 		`https://todo.api.devcode.gethired.id/todo-items?activity_group_id=${params}`,
 		{
 			method: 'GET',
 		}
-	).then(x => {
-		return x.json();
-	});
+	);
+	return await response.json();
 };

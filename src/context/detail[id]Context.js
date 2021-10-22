@@ -1,11 +1,6 @@
 import { useState, createContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-	DetailTodo,
-	RemoveTodoItems,
-	RefetchTodoItems,
-	UpdateTodoItem,
-} from '../api/todos';
+import { DetailTodo } from '../api/todos';
 
 export const DetailContext = createContext(null);
 export const DetailContextProvider = ({ children }) => {
@@ -17,21 +12,9 @@ export const DetailContextProvider = ({ children }) => {
 		isLoading,
 		setIsLoading,
 	} = DetailTodo(id);
-	const [refetchTodoItems, setRefetchTodoItems] = useState(false);
+	const [refetchTodoItems, setRefetchTodoItems] = useState('');
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
-	const [params, setParams] = useState('');
 	const [sort, setSort] = useState('Ascending');
-
-	// function handleUpdateTodoItem() {
-	// 	setIsLoading(true);
-	// 	UpdateTodoItem(params).then(() => {
-	// 		RefetchTodoItems(todo.id).then(refetchRes => {
-	// 			setRefetchTodoItems(refetchRes.data);
-	// 			setShowConfirmModal(false);
-	// 			setIsLoading(false);
-	// 		});
-	// 	});
-	// }
 
 	const todoMemoized = useMemo(() => ({ todo }), [todo]);
 
@@ -54,20 +37,13 @@ export const DetailContextProvider = ({ children }) => {
 		() => ({ showConfirmModal, setShowConfirmModal }),
 		[showConfirmModal, setShowConfirmModal]
 	);
-
 	const sortMemoized = useMemo(() => ({ sort, setSort }), [sort, setSort]);
-
-	const paramsMemoized = useMemo(
-		() => ({ params, setParams }),
-		[params, setParams]
-	);
 
 	return (
 		<DetailContext.Provider
 			value={{
 				isLoadingMemoized,
 				sortMemoized,
-				paramsMemoized,
 				showConfirmModalMemoized,
 				todoMemoized,
 				refetchTodoItemsMemoized,

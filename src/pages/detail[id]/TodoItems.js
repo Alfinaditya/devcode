@@ -9,22 +9,22 @@ import ConfirmModal from '../../components/confirmModal';
 import EditTodoItemModal from './components/EditTodoItemModal';
 import { renderPriorityColor } from '../../helpers';
 import { RemoveTodoItems, RefetchTodoItems } from '../../api/todos';
+import AddTodoItemModal from '../detail[id]/components/AddTodoItemModal';
 
 const TodoItems = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false);
 	const [confirmModalText, setConfirmModalText] = useState('');
-	const [open, setOpen] = useState(false);
+	const [showEditTodoItemModal, setShowEditTodoItemModal] = useState(false);
+	const [showAddTodoItemModal, setShowAddTodoItemModal] = useState(false);
 	const ctx = useContext(DetailContext);
 
-	function handleDelete() {
+	async function handleDelete() {
 		ctx.isLoadingMemoized.setIsLoading(true);
-		RemoveTodoItems(ctx.paramsMemoized.params).then(() => {
-			RefetchTodoItems(ctx.todoMemoized.todo.id).then(refetchRes => {
-				ctx.refetchTodoItemsMemoized.setRefetchTodoItems(refetchRes.data);
-				setShowConfirmModal(false);
-				ctx.isLoadingMemoized.setIsLoading(false);
-			});
-		});
+		const response = await RemoveTodoItems(ctx.paramsMemoized.params);
+		const refetchRes = await RefetchTodoItems(ctx.todoMemoized.todo.id);
+		ctx.refetchTodoItemsMemoized.setRefetchTodoItems(refetchRes.data);
+		setShowConfirmModal(false);
+		ctx.isLoadingMemoized.setIsLoading(false);
 	}
 
 	return (
@@ -36,8 +36,13 @@ const TodoItems = () => {
 						className={styles.todoItemsEmptyIcon}
 						src={todoItemsEmpty}
 						alt='Empty todo items'
+						onClick={() => setShowAddTodoItemModal(true)}
 					/>
 				)}
+			<AddTodoItemModal
+				open={showAddTodoItemModal}
+				setOpen={setShowAddTodoItemModal}
+			/>
 			<ConfirmModal
 				open={showConfirmModal}
 				setOpen={setShowConfirmModal}
@@ -108,7 +113,7 @@ const TodoItems = () => {
 									<p>{todoItem.title}</p>
 									<img
 										onClick={() => {
-											setOpen(true);
+											setShowEditTodoItemModal(true);
 										}}
 										src={pencil}
 										alt='edit'
@@ -125,10 +130,10 @@ const TodoItems = () => {
 								/>
 								<EditTodoItemModal
 									id={todoItem.id}
-									title={todoItem.title}
-									priority={todoItem.priority}
-									open={open}
-									setOpen={setOpen}
+									currentTitle={todoItem.title}
+									currentPriorityValue={todoItem.priority}
+									open={showEditTodoItemModal}
+									setOpen={setShowEditTodoItemModal}
 								/>
 							</div>
 						);
@@ -195,7 +200,7 @@ const TodoItems = () => {
 									<p>{todoItem.title}</p>
 									<img
 										onClick={() => {
-											setOpen(true);
+											setShowEditTodoItemModal(true);
 										}}
 										src={pencil}
 										alt='edit'
@@ -212,10 +217,10 @@ const TodoItems = () => {
 								/>
 								<EditTodoItemModal
 									id={todoItem.id}
-									title={todoItem.title}
-									priority={todoItem.priority}
-									open={open}
-									setOpen={setOpen}
+									currentTitle={todoItem.title}
+									currentPriorityValue={todoItem.priority}
+									open={showEditTodoItemModal}
+									setOpen={setShowEditTodoItemModal}
 								/>
 							</div>
 						);
