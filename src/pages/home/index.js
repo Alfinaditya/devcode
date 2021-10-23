@@ -46,7 +46,7 @@ const Home = () => {
 
 	async function handleDelete() {
 		setIsLoading(true);
-		await RemoveTodo(params);
+		const res = await RemoveTodo(params);
 		const refetchRes = await Refetch();
 		setTodos(refetchRes.data);
 		setInitConfirmModal(false);
@@ -67,16 +67,23 @@ const Home = () => {
 			>
 				{state => (
 					<>
-						{/* Succes Alert */}
 						<div
+							data-cy='modal-information'
 							onClick={() => setSuccessAlert(false)}
 							style={{
 								...modalStyles[state],
 							}}
 							className={styles.successModal}
 						>
-							<img src={modalInformationIcon} alt='Information' />
-							<p className={styles.successModalText}>
+							<img
+								data-cy='modal-information-icon'
+								src={modalInformationIcon}
+								alt='Information'
+							/>
+							<p
+								data-cy='modal-information-title'
+								className={styles.successModalText}
+							>
 								Activity berhasil dihapus
 							</p>
 						</div>
@@ -97,16 +104,24 @@ const Home = () => {
 				setOpen={setInitConfirmModal}
 				handleDelete={handleDelete}
 				title={deleteTitle}
+				things={'activity'}
 			/>
-			{/* Confirm Modal */}
+			{/* Header */}
 			<div className={styles.home}>
 				<div className={styles.header}>
-					<h1 className={styles.title}>Activity</h1>
-					<button className='addButton' onClick={handleAdd}>
+					<h1 className={styles.title} data-cy='activity-title'>
+						Activity
+					</h1>
+					<button
+						data-cy='activity-add-button'
+						className='addButton'
+						onClick={handleAdd}
+					>
 						<img src={plusSvg} alt='Tambah Activity' />
 						<span className='addButtonText'>Tambah</span>
 					</button>
 				</div>
+
 				{isLoading ? (
 					<Loading />
 				) : (
@@ -117,18 +132,23 @@ const Home = () => {
 									const { date, month, years } = convertDate(todo.created_at);
 									return (
 										<div key={todo.id} className={styles.cardContainer}>
-											<div className={styles.card}>
+											<div data-cy='activity-item' className={styles.card}>
 												<h1
+													data-cy='activity-item-title'
 													className={styles.cardTitle}
 													onClick={() => history.push(`/detail/${todo.id}`)}
 												>
 													{todo.title}
 												</h1>
 												<div className={styles.cardFooter}>
-													<p className={styles.cardDate}>
+													<p
+														data-cy='activity-item-date'
+														className={styles.cardDate}
+													>
 														{date} {month} {years}
 													</p>
 													<img
+														data-cy='activity-item-delete-button'
 														src={trashSvg}
 														alt='Delete'
 														onClick={() => {
@@ -144,7 +164,13 @@ const Home = () => {
 								})}
 						</div>
 						{!todos.length && (
-							<img src={todosEmptySvg} onClick={handleDelete} alt='No todos' />
+							<img
+								data-cy='activity-empty-state'
+								style={{ margin: 'auto', display: 'block' }}
+								src={todosEmptySvg}
+								onClick={handleAdd}
+								alt='No todos'
+							/>
 						)}
 					</>
 				)}

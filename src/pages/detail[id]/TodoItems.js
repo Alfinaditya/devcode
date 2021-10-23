@@ -84,6 +84,7 @@ const TodoItems = () => {
 				!ctx.todoMemoized.todo.todo_items.length &&
 				!ctx.refetchTodoItemsMemoized.refetchTodoItems && (
 					<img
+						data-cy='todo-empty-state'
 						className={styles.todoItemsEmptyIcon}
 						src={todoItemsEmpty}
 						alt='Empty todo items'
@@ -99,6 +100,7 @@ const TodoItems = () => {
 				setOpen={setShowConfirmModal}
 				title={confirmModalText}
 				handleDelete={handleDelete}
+				things={'List Item'}
 			/>
 			<Transition
 				in={showEditTodoItemModal}
@@ -134,9 +136,14 @@ const TodoItems = () => {
 					})
 					.map(todoItem => {
 						return (
-							<div className={styles.todoItem} key={todoItem.id}>
+							<div
+								data-cy='todo-item'
+								className={styles.todoItem}
+								key={todoItem.id}
+							>
 								<div>
 									<input
+										data-cy='todo-item-checkbox'
 										defaultChecked={todoItem.is_active === 0 ? true : false}
 										onChange={e => {
 											handleActive(todoItem.id, e.target.checked);
@@ -144,13 +151,15 @@ const TodoItems = () => {
 										type='checkbox'
 									/>
 									<div
+										data-cy='todo-item-priority-indicator'
 										className={styles.todoItemEclipse}
 										style={{
 											background: renderPriorityColor(todoItem.priority),
 										}}
 									></div>
-									<p>{todoItem.title}</p>
+									<p data-cy='todo-item-title'>{todoItem.title}</p>
 									<img
+										data-cy='todo-item-edit-button'
 										onClick={() => {
 											setShowEditTodoItemModal(true);
 											setId(todoItem.id);
@@ -163,6 +172,7 @@ const TodoItems = () => {
 									/>
 								</div>
 								<img
+									data-cy='todo-item-delete-button'
 									onClick={() => {
 										setShowConfirmModal(true);
 										setConfirmModalText(todoItem.title);
@@ -189,9 +199,14 @@ const TodoItems = () => {
 					})
 					.map(todoItem => {
 						return (
-							<div className={styles.todoItem} key={todoItem.id}>
+							<div
+								datata-cy='todo-item'
+								className={styles.todoItem}
+								key={todoItem.id}
+							>
 								<div>
 									<input
+										data-cy='todo-item-checkbox'
 										type='checkbox'
 										defaultChecked={todoItem.is_active === 0 ? true : false}
 										onChange={e => {
@@ -199,13 +214,15 @@ const TodoItems = () => {
 										}}
 									/>
 									<div
+										data-cy='todo-item-priority-indicator'
 										className={styles.todoItemEclipse}
 										style={{
 											background: renderPriorityColor(todoItem.priority),
 										}}
 									></div>
-									<p>{todoItem.title}</p>
+									<p data-cy='todo-item-title'>{todoItem.title}</p>
 									<img
+										data-cy='todo-item-edit-button'
 										onClick={() => {
 											setShowEditTodoItemModal(true);
 											setId(todoItem.id);
@@ -218,6 +235,7 @@ const TodoItems = () => {
 									/>
 								</div>
 								<img
+									data-cy='todo-item-delete-button'
 									onClick={() => {
 										setShowConfirmModal(true);
 										setConfirmModalText(todoItem.title);

@@ -23,12 +23,16 @@ const Title = () => {
 				src={back}
 				alt='Back to Homepage'
 				className={styles.back}
+				data-cy='todo-back-button'
 			/>
 
 			{!showUpdateTitleForm && (
 				<div className={styles.title}>
-					<h1>{ctx.watchTitleFieldMemoized.watchTitleField}</h1>
+					<h1 data-cy='todo-title'>
+						{ctx.watchTitleFieldMemoized.watchTitleField}
+					</h1>
 					<img
+						data-cy='todo-title-edit-button'
 						src={pencil}
 						onClick={() => setshowUpdateTitleForm(true)}
 						alt='Submit'

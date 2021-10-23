@@ -74,19 +74,28 @@ const AddTodoItemModal = ({ open, setOpen }) => {
 							className={styles.modalAdd}
 						>
 							<div className={styles.modalAddHeader}>
-								<h1>Tambah List item</h1>
-								<img onClick={() => setOpen(false)} src={close} alt='Close' />
+								<h1 data-cy='modal-add-title'>Tambah List item</h1>
+								<img
+									data-cy='modal-add-close-button'
+									onClick={() => setOpen(false)}
+									src={close}
+									alt='Close'
+								/>
 							</div>
 							<div className={styles.modalAddBody}>
-								<label>NAMA LIST ITEM</label>
+								<label data-cy='modal-add-name-title'>NAMA LIST ITEM</label>
 								<input
+									data-cy='modal-add-name-input'
 									value={title}
 									onChange={e => setTitle(e.target.value)}
 									type='text'
 									placeholder='Tambahkan nama Activity'
 								/>
-								<label>PRIORITY</label>
-								<div className={styles.priorityDropdown}>
+								<label data-cy='modal-add-priority-title'>PRIORITY</label>
+								<div
+									data-cy='modal-add-priority-dropdown'
+									className={styles.priorityDropdown}
+								>
 									<div
 										className={styles.buttonPriorityDropdown}
 										style={
@@ -116,6 +125,7 @@ const AddTodoItemModal = ({ open, setOpen }) => {
 									{showPriorityOptions &&
 										PRIORITY_CONDITIONS.map(PRIORITY_CONDITION => (
 											<div
+												data-cy='modal-add-priority-item'
 												key={PRIORITY_CONDITION.id}
 												className={styles.priorityDropdownItem}
 												id={PRIORITY_CONDITION.value}
@@ -128,7 +138,6 @@ const AddTodoItemModal = ({ open, setOpen }) => {
 													setShowPriorityOptions(false);
 												}}
 											>
-												{/* TODO FIX THis shit */}
 												<div className={styles.priorityDropdownItemText}>
 													<div
 														className={styles.priorityDropdownEclipse}
@@ -153,6 +162,7 @@ const AddTodoItemModal = ({ open, setOpen }) => {
 							</div>
 							<div className={styles.modalAddFooter}>
 								<button
+									data-cy='modal-add-save-button'
 									className='addButton'
 									style={{ width: '150px' }}
 									disabled={!title}
