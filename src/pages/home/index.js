@@ -8,11 +8,21 @@ import plusSvg from '../../assets/plus.svg';
 import todosEmptySvg from '../../assets/todosEmpty.svg';
 import trashSvg from '../../assets/trash.svg';
 import modalInformationIcon from '../../assets/modalInformationIcon.svg';
-import Animated from 'react-mount-animation';
 import UseScrollBlock from '../../hooks/UseScrollBlock';
 import ConfirmModal from '../../components/confirmModal';
+import { Transition } from 'react-transition-group';
 
 const Home = () => {
+	const overlayStyles = {
+		entering: { opacity: 0 },
+		entered: { opacity: 0.2, transition: '1s' },
+		exiting: { opacity: 0, transition: '1s' },
+	};
+	const modalStyles = {
+		entering: { inset: '200% 0 0 0' },
+		entered: { inset: 0, transition: '1s' },
+		exiting: { inset: '200% 0 0 0', transition: '1s' },
+	};
 	const history = useHistory();
 	const [blockScroll, allowScroll] = UseScrollBlock();
 	const {
@@ -28,7 +38,7 @@ const Home = () => {
 
 	async function handleAdd() {
 		setIsLoading(true);
-		const res = await CreateTodo();
+		await CreateTodo();
 		const refetchRes = await Refetch();
 		setTodos(refetchRes.data);
 		setIsLoading(false);
@@ -36,7 +46,7 @@ const Home = () => {
 
 	async function handleDelete() {
 		setIsLoading(true);
-		const response = await RemoveTodo(params);
+		await RemoveTodo(params);
 		const refetchRes = await Refetch();
 		setTodos(refetchRes.data);
 		setInitConfirmModal(false);
@@ -48,36 +58,38 @@ const Home = () => {
 	}
 	return (
 		<>
-			{/* Succes Alert */}
-			<Animated.div
-				onClick={() => setSuccessAlert(false)}
-				className={styles.successModal}
-				show={successAlert}
-				mountAnim={`
-					0% {inset: -200% 0 0 0 }
-					100% {inset: 0}
-					 `}
-				unmountAnim={`
-					0% {inset: 0}
-					100% {inset: -200% 0 0 0 }
-					`}
+			<Transition
+				in={successAlert}
+				timeout={{
+					exit: 300,
+				}}
+				unmountOnExit
 			>
-				<img src={modalInformationIcon} alt='Information' />
-				<p className={styles.successModalText}>Activity berhasil dihapus</p>
-			</Animated.div>
-			<Animated.div
-				show={successAlert}
-				onClick={() => setSuccessAlert(false)}
-				className={styles.modalOverlay}
-				mountAnim={`
-					 0% {opacity:0}
-					 100% {opacity:0.2}
-					 `}
-				unmountAnim={`
-					 0% {opacity:0.2}
-					 100% {opacity:0}
-					`}
-			></Animated.div>
+				{state => (
+					<>
+						{/* Succes Alert */}
+						<div
+							onClick={() => setSuccessAlert(false)}
+							style={{
+								...modalStyles[state],
+							}}
+							className={styles.successModal}
+						>
+							<img src={modalInformationIcon} alt='Information' />
+							<p className={styles.successModalText}>
+								Activity berhasil dihapus
+							</p>
+						</div>
+						<div
+							onClick={() => setSuccessAlert(false)}
+							style={{
+								...overlayStyles[state],
+							}}
+							className={styles.modalOverlay}
+						></div>
+					</>
+				)}
+			</Transition>
 
 			{/* Confirm Modal */}
 			<ConfirmModal

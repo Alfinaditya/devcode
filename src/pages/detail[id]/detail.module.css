@@ -70,10 +70,12 @@
 	border-radius: 6px;
 	border: 1px solid #e5e5e5;
 	cursor: pointer;
+	background: green;
 }
-.priorityDropdown div:nth-child(1) {
+.priorityDropdownItemText {
 	display: flex;
 	align-items: center;
+	/* background: green; */
 }
 .priorityDropdown img {
 	margin-right: 10px;

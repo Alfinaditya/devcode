@@ -80,3 +80,12 @@
 	font-weight: 500;
 	margin-left: 10px;
 }
+.modalOverlay {
+	width: 100%;
+	height: 100vh;
+	left: 0;
+	top: 0;
+	background: var(--black-color);
+	position: fixed;
+	opacity: 0.2;
+}
